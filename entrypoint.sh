@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 REPOSITORY=$1
 ACCESS_TOKEN=$2
