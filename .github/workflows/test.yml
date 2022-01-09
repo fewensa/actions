@@ -1,0 +1,21 @@
+name: Clone Repository Workflow
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+
+  clone-via-http:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone repository
+        uses: fewensa/clone-any-action@main
+        with:
+          repository: https://github.com/fewensa/clone-any-action
+
+      - name: Access cloned repository content
+        run: |
+          cd clone-any-action
+          ls -l

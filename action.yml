@@ -12,6 +12,9 @@ inputs:
   ssh-key:
     description: 'SSH private key'
     required: false
+  ssh-host:
+    description: 'SSH server host, will auto scan known hosts by this value'
+    required: false
   target-name:
     description: 'Clone target dir name'
     required: false
