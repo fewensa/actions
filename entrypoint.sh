@@ -9,9 +9,7 @@ SSH_KEY=$3
 SSH_HOST=$4
 TARGET_NAME=$5
 
-PATH_SSH=$HOME/.ssh
-
-mkdir -p $PATH_SSH
+mkdir -p ~/.ssh
 
 if [ -n "$SSH_KEY" ]; then
   eval $(ssh-agent -s)
@@ -19,7 +17,7 @@ if [ -n "$SSH_KEY" ]; then
 fi
 
 if [ -n "$SSH_HOST" ]; then
-  ssh-keyscan -H "$SSH_HOST" >> $PATH_SSH/known_hosts
+  ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 fi
 
 Z_REPOSITORY=$REPOSITORY
