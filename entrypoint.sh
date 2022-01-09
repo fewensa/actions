@@ -24,7 +24,6 @@ fi
 Z_REPOSITORY=$REPOSITORY
 
 if [ -n "$ACCESS_TOKEN" ]; then
-  echo 'access token: ' $ACCESS_TOKEN
   if [[ "$REPOSITORY" =~ ^https://* ]]; then
       Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/https:\/\//https:\/\/${ACCESS_TOKEN}@/g")
   fi
