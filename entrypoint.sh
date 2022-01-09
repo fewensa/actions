@@ -14,7 +14,7 @@ PATH_SSH=$HOME/.ssh
 mkdir -p $PATH_SSH
 
 if [ -n "$SSH_KEY" ]; then
-  echo "$SSH_KEY" > $PATH_SSH/id_rsa
+  echo "$SSH_KEY" | tr -d '\r' | ssh-add -
 fi
 
 if [ -n "$SSH_HOST" ]; then
