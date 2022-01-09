@@ -9,6 +9,9 @@ SSH_KEY=${INPUT_SSH-KEY}
 SSH_HOST=${INPUT_SSH-KEY}
 TARGET_NAME=${INPUT_ACCESS-TOKEN}
 
+echo "Repository: ${REPOSITORY}"
+echo "SSH KEY: ${SSH_KEY}"
+
 mkdir -p ~/.ssh
 
 if [ -n "$SSH_KEY" ]; then
