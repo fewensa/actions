@@ -1,0 +1,29 @@
+name: 'Clone Any Git Repo Action'
+
+description: "Clone any git repository in Github Actions"
+
+inputs:
+  repository:
+    description: 'Repository url'
+    required: true
+  access-token:
+    description: 'Access token with http protocol'
+    required: false
+  ssh-key:
+    description: 'SSH private key'
+    required: false
+  target-name:
+    description: 'Clone target dir name'
+    required: false
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.owner }}
+    - ${{ inputs.repository }}
+    - ${{ inputs.access-token }}
+
+branding:
+  icon: 'download'
+  color: 'blue'
