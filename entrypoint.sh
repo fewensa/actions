@@ -34,6 +34,7 @@ fi
 
 
 
+echo 'Repository:' $Z_REPOSITORY
 if [ -z "$TARGET_NAME" ]; then
     git clone $Z_REPOSITORY
 
