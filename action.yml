@@ -60,12 +60,12 @@ runs:
         if [ -z "$TARGET_NAME" ]; then
             git clone $Z_REPOSITORY
 
-            echo "Cloned $2 repository successfully."
+            echo "Cloned $Z_REPOSITORY repository successfully."
         else
             git clone $Z_REPOSITORY $TARGET_NAME
 
-            echo "Cloned $2 repository successfully."
-            echo "Access the repository content using \"cd $2\"."
+            echo "Cloned $Z_REPOSITORY repository successfully."
+            echo "Access the repository content using \"cd $TARGET_NAME\"."
         fi
 
 

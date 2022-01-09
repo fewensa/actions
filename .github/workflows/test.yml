@@ -14,12 +14,8 @@ jobs:
         uses: fewensa/clone-any-action@main
         with:
           repository: https://github.com/fewensa/clone-any-action
-          access-token: access-token
-          ssh-key: ssh-key
-          ssh-host: ssh-host
-          target-name: target-name
 
       - name: Access cloned repository content
         run: |
-          cd target-name
+          cd clone-any-action
           ls -l
