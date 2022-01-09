@@ -40,8 +40,6 @@ runs:
         fi
 
         if [ -n "$SSH_HOST" ]; then
-          apk update
-          apk add openssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
         fi
 
