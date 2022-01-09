@@ -21,5 +21,5 @@ jobs:
 
       - name: Access cloned repository content
         run: |
-          cd clone-any-action
+          cd target-name
           ls -l
