@@ -2,7 +2,7 @@
 
 set -xe
 
-REPOSITORY=$1
+ =$1
 ACCESS_TOKEN=$2
 SSH_KEY=$3
 SSH_HOST=$4
