@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 
-set -xe
+set -e
 
 REPOSITORY=$1
 ACCESS_TOKEN=$2
