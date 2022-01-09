@@ -62,7 +62,7 @@ runs:
 
             echo "Cloned $2 repository successfully."
         else
-            git clone Z_REPOSITORY $TARGET_NAME
+            git clone $Z_REPOSITORY $TARGET_NAME
 
             echo "Cloned $2 repository successfully."
             echo "Access the repository content using \"cd $2\"."
