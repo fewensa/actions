@@ -18,7 +18,7 @@ if [ -n "$SSH_KEY" ]; then
 fi
 
 if [ -n "$SSH_HOST" ]; then
-  ssh-keyscan github.com >> ~/.ssh/known_hosts
+  ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 fi
 
 Z_REPOSITORY=$REPOSITORY
