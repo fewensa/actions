@@ -14,6 +14,7 @@ PATH_SSH=$HOME/.ssh
 mkdir -p $PATH_SSH
 
 if [ -n "$SSH_KEY" ]; then
+  eval $(ssh-agent -s)
   echo "$SSH_KEY" | tr -d '\r' | ssh-add -
 fi
 
