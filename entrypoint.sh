@@ -24,10 +24,10 @@ fi
 Z_REPOSITORY=$REPOSITORY
 
 if [ -n "$ACCESS_TOKEN" ]; then
-  if [[ "$REPOSITORY" =~ ^https://* ]]; then
+  if [[ $(expr match "$ACCESS_TOKEN" 'https://*') != 0 ]]; then
       Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/https:\/\//https:\/\/${ACCESS_TOKEN}@/g")
   fi
-  if [[ "$REPOSITORY" =~ ^http://* ]]; then
+  if [[ $(expr match "$ACCESS_TOKEN" 'http://*') != 0 ]]; then
       Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/http:\/\//http:\/\/${ACCESS_TOKEN}@/g")
   fi
 fi
