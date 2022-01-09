@@ -35,11 +35,15 @@ fi
 
 echo 'Repository:' $Z_REPOSITORY
 if [ -z "$TARGET_NAME" ]; then
-    git clone $Z_REPOSITORY .
+    git clone $Z_REPOSITORY repo
+    chmod 755 -r ./repo
+    mv ./repo/* ./
+    rm -rf ./repo
 
     echo "Cloned $Z_REPOSITORY repository successfully."
 else
     git clone $Z_REPOSITORY $TARGET_NAME
+    chmod 755 -r ./$TARGET_NAME
 
     echo "Cloned $Z_REPOSITORY repository successfully."
     echo "Access the repository content using \"cd $TARGET_NAME\"."
