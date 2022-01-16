@@ -16,9 +16,9 @@ jobs:
           path: .github/actions
 
       - name: Clone repository
-        uses: .github/actions/clone-any
+        uses: ./.github/actions/clone-any
         with:
-          repository: https://github.com/fewensa/clone-any-action
+          repository: https://github.com/fewensa/actions
 
       - name: Access cloned repository content
         run: |
