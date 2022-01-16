@@ -1,8 +1,10 @@
-Clone Any Git Repo Action
+Actions group
 ===
 
 
-## Clone a repository via https
+## Clone Any
+
+### Clone a repository via https
 
 ```
 - name: Clone repository
@@ -11,7 +13,7 @@ Clone Any Git Repo Action
     repository: 'https://github.com/org/repo'
 ```
 
-## Clone a repository via ssh
+### Clone a repository via ssh
 
 ```
 - name: Clone repository

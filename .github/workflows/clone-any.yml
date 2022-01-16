@@ -10,12 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - uses: actions/checkout@v2
+        with:
+          repository: fewensa/actions
+          path: .github/actions
+
       - name: Clone repository
-        uses: fewensa/clone-any-action@main
+        uses: .github/actions/clone-any
         with:
           repository: https://github.com/fewensa/clone-any-action
 
       - name: Access cloned repository content
         run: |
-          cd clone-any-action
           ls -l
