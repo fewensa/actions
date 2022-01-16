@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "GitHub action to generate android sign key properties file",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "tsc",
     "test": "jest",
     "package": "ncc build --source-map"
   },
