@@ -21,5 +21,4 @@ jobs:
           repository: https://github.com/fewensa/actions
 
       - name: Access cloned repository content
-        run: |
-          ls -l
+        run: ls -l
