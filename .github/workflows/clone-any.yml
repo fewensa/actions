@@ -10,13 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
-        with:
-          repository: fewensa/actions
-          path: .github/actions
-
       - name: Clone repository
-        uses: ./.github/actions/clone-any
+        uses: ./clone-any
         with:
           repository: https://github.com/fewensa/actions
 
