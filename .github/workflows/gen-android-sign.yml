@@ -26,6 +26,7 @@ jobs:
 
       - uses: ./gen-android-sign
         name: Generate sign file
+        id: gen_key
         with:
           path: android/key.properties
           signingKeyBase64: ${{ steps.get_key.outputs.text }}
@@ -34,5 +35,9 @@ jobs:
           keyPassword: android
 
       - name: Verify
-        run: cat android/key.properties
+        run: |
+          set -xe
+          echo ${ANDROID_KEY_PROPERTIES}
+          echo ${{ steps.gen_key.outputs.path }}
+          cat android/key.properties
 
