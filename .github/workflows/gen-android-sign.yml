@@ -1,0 +1,38 @@
+name: Gen androin sign
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test gen android sign
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run tests
+        run: npm run test
+
+      - uses: pCYSl5EDgo/cat@1.0.0
+        name: Cat for GitHub Actions
+        id: get_key
+        with:
+          path: __tests__/test_key_b64.txt
+
+      - uses: ./gen-android-sign
+        name: Generate sign file
+        with:
+          path: android/key.properties
+          signingKeyBase64: ${{ steps.get_key.outputs.text }}
+          alias: test_key
+          keyStorePassword: android
+          keyPassword: android
+
+      - name: Verify
+        run: cat android/key.properties
+
