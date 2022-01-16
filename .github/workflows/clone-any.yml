@@ -15,6 +15,7 @@ jobs:
         uses: ./clone-any
         with:
           repository: https://github.com/fewensa/actions
+          target: actions-group
 
       - name: Access cloned repository content
         run: ls -l
