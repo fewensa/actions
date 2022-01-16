@@ -1,37 +1,7 @@
 Actions group
 ===
 
-## Clone Any
+- [clone-any](./clone-any)
+- [gen-android-sign](./gen-android-sign)
 
-### Clone a repository via https
-
-```
-- uses: actions/checkout@v2
-  with:
-    repository: fewensa/actions
-    path: .github/actions
-
-- name: Clone repository
-  uses: ./.github/actions/clone-any
-  with:
-    repository: 'https://github.com/org/repo'
-```
-
-### Clone a repository via ssh
-
-```
-- uses: actions/checkout@v2
-  with:
-    repository: fewensa/actions
-    path: .github/actions
-
-- name: Clone repository
-  uses: ./.github/actions/clone-any
-  with:
-    repository: 'git@github.com:org/repo.git'
-    ssh-key: |
-      ---PRIVATE KEY---
-      ...
-      ---END---
-```
 
