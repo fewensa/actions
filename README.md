@@ -1,14 +1,18 @@
 Actions group
 ===
 
-
 ## Clone Any
 
 ### Clone a repository via https
 
 ```
+- uses: actions/checkout@v2
+  with:
+    repository: fewensa/actions
+    path: .github/actions
+
 - name: Clone repository
-  uses: fewensa/clone-any-action@v1
+  uses: ./.github/actions/clone-any
   with:
     repository: 'https://github.com/org/repo'
 ```
@@ -16,8 +20,13 @@ Actions group
 ### Clone a repository via ssh
 
 ```
+- uses: actions/checkout@v2
+  with:
+    repository: fewensa/actions
+    path: .github/actions
+
 - name: Clone repository
-  uses: fewensa/clone-any-action@v1
+  uses: ./.github/actions/clone-any
   with:
     repository: 'git@github.com:org/repo.git'
     ssh-key: |
