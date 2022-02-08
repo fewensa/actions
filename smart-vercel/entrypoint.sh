@@ -26,12 +26,12 @@ ${SCRIPT_INSTALL}
 
 ${SCRIPT_BUILD}
 
-vercel ${VERCEL_TOKEN:+"--token $VERCEL_TOKEN"} \
-  ${VERCEL_GROUP:+"--scope $VERCEL_GROUP"} link \
+vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} \
+  ${VERCEL_GROUP:+--scope $VERCEL_GROUP} link \
   --confirm
 
-vercel ${VERCEL_TOKEN:+"--token $VERCEL_TOKEN"} \
-  ${VERCEL_GROUP:+"--scope $VERCEL_GROUP"} deploy | tee deploy.log
+vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} \
+  ${VERCEL_GROUP:+--scope $VERCEL_GROUP} deploy | tee deploy.log
 
 content=$(cat deploy.log)
 content="${content//'%'/'%25'}"
@@ -57,6 +57,8 @@ if [ -n "${PREVIEW_OUTPUT}" ]; then
   content="${content//'%'/'%25'}"
   content="${content//$'\n'/'%0A'}"
   content="${content//$'\r'/'%0D'}"
+
+  rm -rf comment.md
 
   echo "::set-output name=VERCEL_OUTPUT::$content"
 else
