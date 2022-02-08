@@ -8,6 +8,6 @@ COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 RUN apt update \
-  && apt install -y curl git openssh \
+  && apt install -y git curl ca-certificates \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
