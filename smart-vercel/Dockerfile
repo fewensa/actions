@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM iidateco/alpine-nvm
+FROM debian:stretch
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
@@ -7,5 +7,7 @@ COPY entrypoint.sh /entrypoint.sh
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/entrypoint.sh"]
 
-# RUN apk update && \
-#   apk add --no-cache git bash openssh
+RUN apt update \
+  && apt install -y curl git openssh \
+  && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
