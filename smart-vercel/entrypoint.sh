@@ -1,23 +1,16 @@
 #!/bin/bash
 #
 
-set -e
+set -xe
 
-. /root/.nvm/nvm.sh
-
-NODE_VERSION=${INPUT_NODE_VERSION:-14.17.0}
 SCRIPT_INSTALL=${INPUT_SCRIPT_INSTALL}
 SCRIPT_BUILD=${INPUT_SCRIPT_BUILD}
 WORKDIR=${INPUT_WORKDIR}
 PROJECT_NAME=${INPUT_PROJECT_NAME}
 
-nvm install ${NODE_VERSION}
-nvm use ${NODE_VERSION}
 
 node -v 
 npm -v
-
-npm i -g yarn vercel
 
 
 REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
