@@ -67,7 +67,8 @@ if [ -n "${PREVIEW_OUTPUT}" ]; then
   rm -rf comment.md
 
   echo "::set-output name=PREVIEW_OUTPUT::$PREVIEW_OUTPUT"
-
+else
+  echo "::set-output name=PREVIEW_OUTPUT::$PREVIEW_LINK"
 fi
 echo ''
 
