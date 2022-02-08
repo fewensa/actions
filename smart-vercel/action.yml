@@ -7,6 +7,21 @@ inputs:
     description: 'Nodejs version'
     required: false
     default: '14.17.0'
+  script_install:
+    description: 'Install dependencies script'
+    required: false
+    default: 'yarn install'
+  script_build:
+    description: 'Build project script'
+    required: false
+    default: 'yarn build'
+  workdir:
+    description: 'Workdir'
+    required: false
+    default: '.'
+  project_name:
+    description: 'The name of project in Vercel'
+    required: false
 
 runs:
   using: 'docker'
