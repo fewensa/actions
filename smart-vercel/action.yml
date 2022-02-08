@@ -1,0 +1,17 @@
+name: 'Smart Vercel'
+
+description: 'Smart build and deploy to Vercel'
+
+inputs:
+  node_version:
+    description: 'Nodejs version'
+    required: false
+    default: '14.17.0'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+branding:
+  icon: 'download'
+  color: 'blue'
