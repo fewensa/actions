@@ -16,15 +16,19 @@ node -v
 npm -v
 
 
-REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
-echo ${REPO_NAME}
-
-
 cd ${WORKDIR}
 
 ${SCRIPT_INSTALL}
 
 ${SCRIPT_BUILD}
+
+
+REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
+echo ${REPO_NAME}
+
+mv build ${REPO_NAME}
+
+cd ${REPO_NAME}
 
 vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} \
   ${VERCEL_GROUP:+--scope $VERCEL_GROUP} link \
