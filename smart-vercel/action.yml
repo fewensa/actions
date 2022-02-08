@@ -22,6 +22,16 @@ inputs:
   project_name:
     description: 'The name of project in Vercel'
     required: false
+  vercel_group:
+    descritpion: 'Vercel group account'
+    required: false
+  vercel_token:
+    description: 'Vercel token'
+    required: true
+  preview_output:
+    description: 'Output preview markdown'
+    required: false
+
 
 runs:
   using: 'docker'

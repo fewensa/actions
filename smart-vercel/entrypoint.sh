@@ -7,7 +7,10 @@ SCRIPT_INSTALL=${INPUT_SCRIPT_INSTALL}
 SCRIPT_BUILD=${INPUT_SCRIPT_BUILD}
 WORKDIR=${INPUT_WORKDIR}
 PROJECT_NAME=${INPUT_PROJECT_NAME}
+VERCEL_GROUP=${INPUT_VERCEL_GROUP}
+VERCEL_TOKEN=${INPUT_VERCEL_TOKEN}
 
+PREVIEW_OUTPUT=${INPUT_PREVIEW_OUTPUT}
 
 node -v 
 npm -v
@@ -22,4 +25,41 @@ cd ${WORKDIR}
 ${SCRIPT_INSTALL}
 
 ${SCRIPT_BUILD}
+
+vercel ${VERCEL_TOKEN:+"--token $VERCEL_TOKEN"} \
+  ${VERCEL_GROUP:+"--scope $VERCEL_GROUP"} link \
+  --confirm
+
+vercel ${VERCEL_TOKEN:+"--token $VERCEL_TOKEN"} \
+  ${VERCEL_GROUP:+"--scope $VERCEL_GROUP"} deploy | tee deploy.log
+
+content=$(cat deploy.log)
+content="${content//'%'/'%25'}"
+content="${content//$'\n'/'%0A'}"
+content="${content//$'\r'/'%0D'}"
+
+rm -rf deploy.log
+
+echo ''
+
+
+if [ -n "${PREVIEW_OUTPUT}" ]; then
+  SHA=${GITHUB_SHA::7}
+  COMMIT="Commit: [${GITHUB_SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
+  PREVIEW="Preview: ${content}"
+
+  echo '\---' >> comment.md
+  echo $COMMIT >> comment.md
+  echo $PREVIEW >> comment.md
+  echo '' >> comment.md
+
+  content=$(cat comment.md)
+  content="${content//'%'/'%25'}"
+  content="${content//$'\n'/'%0A'}"
+  content="${content//$'\r'/'%0D'}"
+
+  echo "::set-output name=VERCEL_OUTPUT::$content"
+else
+  echo "::set-output name=VERCEL_OUTPUT::$content"  
+fi
 
