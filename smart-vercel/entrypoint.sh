@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 
-. /root/.nvm/nvm.sh
+set -e
 
-set -xe
+. /root/.nvm/nvm.sh
 
 
 NODE_VERSION=${INPUT_NODE_VERSION:-14.17.0}
