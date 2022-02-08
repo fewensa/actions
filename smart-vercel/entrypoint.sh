@@ -9,6 +9,7 @@ WORKDIR=${INPUT_WORKDIR}
 PROJECT_NAME=${INPUT_PROJECT_NAME}
 VERCEL_GROUP=${INPUT_VERCEL_GROUP}
 VERCEL_TOKEN=${INPUT_VERCEL_TOKEN}
+PROD_MODE=${INPUT_PROD_MODE}
 
 PREVIEW_OUTPUT=${INPUT_PREVIEW_OUTPUT}
 
@@ -35,7 +36,8 @@ vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} \
   --confirm
 
 vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} \
-  ${VERCEL_GROUP:+--scope $VERCEL_GROUP} deploy | tee deploy.log
+  ${VERCEL_GROUP:+--scope $VERCEL_GROUP} \
+  ${PROD_MODE:+--prod} deploy | tee deploy.log
 
 content=$(cat deploy.log)
 content="${content//'%'/'%25'}"

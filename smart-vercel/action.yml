@@ -31,6 +31,9 @@ inputs:
   preview_output:
     description: 'Output preview markdown'
     required: false
+  prod_mode:
+    description: 'Production mode'
+    required: false
 
 
 runs:
