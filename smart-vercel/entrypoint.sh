@@ -45,7 +45,7 @@ echo ''
 
 if [ -n "${PREVIEW_OUTPUT}" ]; then
   SHA=${GITHUB_SHA::7}
-  COMMIT="Commit: [${GITHUB_SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
+  COMMIT="Commit: [${SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
   PREVIEW="Preview: ${content}"
 
   echo '\---' >> comment.md
