@@ -41,6 +41,7 @@ content=$(cat deploy.log)
 content="${content//'%'/'%25'}"
 content="${content//$'\n'/'%0A'}"
 content="${content//$'\r'/'%0D'}"
+PREVIEW_LINK=${content}
 
 rm -rf deploy.log
 
@@ -50,7 +51,7 @@ echo ''
 if [ -n "${PREVIEW_OUTPUT}" ]; then
   SHA=${GITHUB_SHA::7}
   COMMIT="Commit: [${SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
-  PREVIEW="Preview: ${content}"
+  PREVIEW="Preview: ${PREVIEW_LINK}"
 
   echo '\---' >> comment.md
   echo $COMMIT >> comment.md
@@ -61,11 +62,13 @@ if [ -n "${PREVIEW_OUTPUT}" ]; then
   content="${content//'%'/'%25'}"
   content="${content//$'\n'/'%0A'}"
   content="${content//$'\r'/'%0D'}"
+  PREVIEW_OUTPUT=${content}
 
   rm -rf comment.md
 
-  echo "::set-output name=VERCEL_OUTPUT::$content"
-else
-  echo "::set-output name=VERCEL_OUTPUT::$content"  
-fi
+  echo "::set-output name=PREVIEW_OUTPUT::$PREVIEW_OUTPUT"
 
+fi
+echo ''
+
+echo "::set-output name=PREVIEW_LINK::$PREVIEW_LINK"
