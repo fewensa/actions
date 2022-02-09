@@ -38,6 +38,10 @@ inputs:
   prod_mode:
     description: 'Production mode'
     required: false
+  dist_path:
+    description: 'Dist output path'
+    required: false
+    default: 'build'
 
 
 runs:
