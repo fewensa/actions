@@ -7,6 +7,10 @@ inputs:
     description: 'Nodejs version'
     required: false
     default: '14.17.0'
+  script_run:
+    description: 'Run build script'
+    required: false
+    default: true
   script_install:
     description: 'Install dependencies script'
     required: false
