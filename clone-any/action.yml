@@ -50,11 +50,11 @@ runs:
 
         if [ -n "$ACCESS_TOKEN" ]; then
           echo 1
-          if [[ $REPOSITORY =~ 'https://.*' ]]; then
+          if [[ $REPOSITORY =~ 'https://*' ]]; then
           echo 2
               Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/https:\/\//https:\/\/${ACCESS_TOKEN}@/g")
           fi
-          if [[ $REPOSITORY =~ 'http://.*' ]]; then
+          if [[ $REPOSITORY =~ 'http://*' ]]; then
           echo 3
               Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/http:\/\//http:\/\/${ACCESS_TOKEN}@/g")
           fi
