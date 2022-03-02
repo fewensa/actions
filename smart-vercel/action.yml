@@ -6,11 +6,11 @@ inputs:
   node_version:
     description: 'Nodejs version'
     required: false
-    default: '14.17.0'
+    default: '14'
   script_run:
     description: 'Run build script'
     required: false
-    default: true
+    default: 'true'
   script_install:
     description: 'Install dependencies script'
     required: false
@@ -27,7 +27,7 @@ inputs:
     description: 'The name of project in Vercel'
     required: false
   vercel_group:
-    descritpion: 'Vercel group account'
+    description: 'Vercel group account'
     required: false
   vercel_token:
     description: 'Vercel token'
@@ -42,12 +42,112 @@ inputs:
     description: 'Dist output path'
     required: false
     default: 'build'
+  env_ci:
+    description: 'ENV CI'
+    required: false
+    default: 'false'
+  alias_domain:
+    description: 'Alias domain name for vercel.app'
+    required: false
 
+outputs:
+  PREVIEW_OUTPUT:
+    description: "Vercel deploy output"
+    value: ${{ steps.deploy_vercel.outputs.PREVIEW_OUTPUT }}
+  PREVIEW_LINK:
+    description: "Vercel deploy preview link"
+    value: ${{ steps.deploy_vercel.outputs.PREVIEW_LINK }}
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "composite"
+  steps:
+    - name: Setup NodeJS
+      uses: actions/setup-node@v2
+      if: ${{ inputs.script_run == 'true' }}
+      with:
+        node-version: ${{ inputs.node_version }}
 
-branding:
-  icon: 'download'
-  color: 'blue'
+    - name: Install dependencies
+      shell: bash
+      if: ${{ inputs.script_run == 'true' }}
+      run: |
+        cd ${{ inputs.workdir }}
+        ${{ inputs.script_install }}
+
+    - name: Build project
+      shell: bash
+      if: ${{ inputs.script_run == 'true' }}
+      run: |
+        cd ${{ inputs.workdir }}
+        export CI=${{ inputs.env_ci }}
+        ${{ inputs.script_build }}
+
+    - name: Deploy to Vercel
+      shell: bash
+      id: deploy_vercel
+      run: |
+        set -xe
+        cd ${{ inputs.workdir }}
+        PROJECT_NAME=${{ inputs.project_name }}
+        REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
+        VERCEL_TOKEN=${{ inputs.vercel_token }}
+        VERCEL_GROUP=${{ inputs.vercel_group }}
+        PREVIEW_OUTPUT=${{ inputs.preview_output }}
+        PROD_MODE=${{ inputs.prod_mode }}
+        ALIAS_DOMAIN=${{ inputs.alias_domain }}
+
+        mv ${{ inputs.dist_path }} ${REPO_NAME}
+
+        PATH_VERCEL_JSON=./vercel.json
+        if [ -f "${PATH_VERCEL_JSON}" ]; then
+          mv ${PATH_VERCEL_JSON} ${REPO_NAME}/
+        fi
+
+        cd ${REPO_NAME}
+
+        VERCEL="vercel ${VERCEL_TOKEN:+--token $VERCEL_TOKEN} ${VERCEL_GROUP:+--scope $VERCEL_GROUP}"
+
+        ${VERCEL} link --confirm
+
+        ${VERCEL} ${PROD_MODE:+--prod} deploy | tee deploy.log
+
+        DEPLOYMENT_URL=$(cat deploy.log)
+
+        if [ -n "${ALIAS_DOMAIN}" ]; then
+          ${VERCEL} alias ${DEPLOYMENT_URL} ${ALIAS_DOMAIN}.vercel.app
+        fi
+
+        content="${DEPLOYMENT_URL//'%'/'%25'}"
+        content="${content//$'\n'/'%0A'}"
+        content="${content//$'\r'/'%0D'}"
+        PREVIEW_LINK="${content}${ALIAS_DOMAIN:+ https://${ALIAS_DOMAIN}.vercel.app}"
+
+        rm -rf deploy.log
+
+        echo ''
+
+        if [ -n "${PREVIEW_OUTPUT}" ]; then
+          SHA=${GITHUB_SHA::7}
+          COMMIT="Commit: [${SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
+          PREVIEW="Preview: ${PREVIEW_LINK}"
+
+          echo '\---' >> comment.md
+          echo $COMMIT >> comment.md
+          echo $PREVIEW >> comment.md
+          echo '' >> comment.md
+
+          content=$(cat comment.md)
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          PREVIEW_OUTPUT=${content}
+
+          rm -rf comment.md
+
+          echo "::set-output name=PREVIEW_OUTPUT::$PREVIEW_OUTPUT"
+        else
+          echo "::set-output name=PREVIEW_OUTPUT::$PREVIEW_LINK"
+        fi
+
+        echo ''
+        echo "::set-output name=PREVIEW_LINK::$PREVIEW_LINK"
