@@ -75,19 +75,22 @@ runs:
         fi
 
         Z_REPOSITORY=
+        Z_SAFE_REPOSITORY=
 
 
         if [ -n "${SSH_KEY}" ]; then
           Z_REPOSITORY="ssh://${_SERVER}/${REPOSITORY}"
+          Z_SAFE_REPOSITORY=${Z_REPOSITORY}
         else
           PROTOCOL='https://'
           if [ "${ENABLE_SSL}" != "true" ]; then
             PROTOCOL='http://'
           fi
           Z_REPOSITORY=${PROTOCOL}${ACCESS_TOKEN:+"$ACCESS_TOKEN@"}${_SERVER}/${REPOSITORY}
+          Z_SAFE_REPOSITORY=${PROTOCOL}${_SERVER}/${REPOSITORY}
         fi
 
-        echo 'Repository:' $Z_REPOSITORY
+        echo "Repository: ${Z_SAFE_REPOSITORY}"
         if [ -z "$TARGET_NAME" ]; then
             # git clone $Z_REPOSITORY .
             
