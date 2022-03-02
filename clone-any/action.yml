@@ -80,8 +80,11 @@ runs:
         if [ -n "${SSH_KEY}" ]; then
           Z_REPOSITORY="ssh://${_SERVER}/${REPOSITORY}"
         else
-          Z_REPOSITORY=$([[ "${ENABLE_SSL}" == "true" ]] && echo 'https://' || echo 'http://')\
-            ${ACCESS_TOKEN:+"$ACCESS_TOKEN@"}${_SERVER}/${REPOSITORY}
+          PROTOCOL='https://'
+          if [ "${ENABLE_SSL}" != "true" ]; then
+            PROTOCOL='http://'
+          fi
+          Z_REPOSITORY=${PROTOCOL}${ACCESS_TOKEN:+"$ACCESS_TOKEN@"}${_SERVER}/${REPOSITORY}
         fi
 
         echo 'Repository:' $Z_REPOSITORY
