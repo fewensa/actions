@@ -3,6 +3,17 @@ name: 'Clone Any Git Repo Action'
 description: "Clone any git repository in Github Actions"
 
 inputs:
+  platform:
+    description: 'The git platform, if you want use custom platform, please set none'
+    required: false
+    default: 'github'
+  server_host:
+    description: 'Custom server_host'
+    required: false
+  enable_ssl:
+    description: 'Is enable https'
+    required: false
+    default: 'true'
   repository:
     description: 'Repository url'
     required: true
@@ -17,6 +28,9 @@ inputs:
     required: false
   target:
     description: 'Clone target dir name'
+    required: false
+  ref:
+    description: 'Ref'
     required: false
 
 runs:
@@ -33,6 +47,10 @@ runs:
         SSH_KEY=${{ inputs.ssh_key }}
         SSH_HOST=${{ inputs.ssh_host }}
         TARGET_NAME=${{ inputs.target }}
+        PLATFORM=${{ inputs.platform }}
+        SERVER_HOST=${{ inputs.server_host }}
+        ENABLE_SSL=${{ inputs.enable_ssl }}
+        GIT_REF=${{ inputs.ref }}
 
 
         mkdir -p ~/.ssh
@@ -46,18 +64,24 @@ runs:
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
         fi
 
-        Z_REPOSITORY=$REPOSITORY
+        _SERVER=
 
-        if [ -n "$ACCESS_TOKEN" ]; then
-          echo 1
-          if [[ $REPOSITORY =~ 'https://*' ]]; then
-          echo 2
-              Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/https:\/\//https:\/\/${ACCESS_TOKEN}@/g")
-          fi
-          if [[ $REPOSITORY =~ 'http://*' ]]; then
-          echo 3
-              Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/http:\/\//http:\/\/${ACCESS_TOKEN}@/g")
-          fi
+        if [ "${PLATFORM}" == "github" ]; then
+          _SERVER=github.com
+        elif [ "${PLATFORM}" == "gitlab" ]; then
+          _SERVER=gitlab.com
+        else
+          _SERVER=${SERVER_HOST}
+        fi
+
+        Z_REPOSITORY=
+
+
+        if [ -n "${SSH_KEY}" ]; then
+          Z_REPOSITORY="ssh://${_SERVER}/${REPOSITORY}"
+        else
+          Z_REPOSITORY=$([[ "${ENABLE_SSL}" == "true" ]] && echo 'https://' || echo 'http://')\
+            ${ACCESS_TOKEN:+"$ACCESS_TOKEN@"}${_SERVER}/${REPOSITORY}
         fi
 
         echo 'Repository:' $Z_REPOSITORY
@@ -65,12 +89,18 @@ runs:
             # git clone $Z_REPOSITORY .
             
             git clone $Z_REPOSITORY repo
+            if [ -n "${GIT_REF}" ]; then
+              git checkout -b ${GIT_REF} origin/${GIT_REF}
+            fi
             mv ./repo/* ./
             rm -rf ./repo
 
             echo "Cloned $Z_REPOSITORY repository successfully."
         else
             git clone $Z_REPOSITORY $TARGET_NAME
+            if [ -n "${GIT_REF}" ]; then
+              git checkout -b ${GIT_REF} origin/${GIT_REF}
+            fi
 
             echo "Cloned $Z_REPOSITORY repository successfully."
             echo "Access the repository content using \"cd $TARGET_NAME\"."

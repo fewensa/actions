@@ -14,7 +14,8 @@ jobs:
       - name: Clone repository
         uses: ./clone-any
         with:
-          repository: https://github.com/fewensa/actions
+          platform: github
+          repository: fewensa/actions
           target: actions-group
 
       - name: Access cloned repository content
