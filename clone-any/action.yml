@@ -49,10 +49,13 @@ runs:
         Z_REPOSITORY=$REPOSITORY
 
         if [ -n "$ACCESS_TOKEN" ]; then
+          echo 1
           if [[ $REPOSITORY =~ 'https://.*' ]]; then
+          echo 2
               Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/https:\/\//https:\/\/${ACCESS_TOKEN}@/g")
           fi
           if [[ $REPOSITORY =~ 'http://.*' ]]; then
+          echo 3
               Z_REPOSITORY=$(echo $REPOSITORY | sed -e "s/http:\/\//http:\/\/${ACCESS_TOKEN}@/g")
           fi
         fi
@@ -62,14 +65,12 @@ runs:
             # git clone $Z_REPOSITORY .
             
             git clone $Z_REPOSITORY repo
-            chmod -R 777 ./repo
             mv ./repo/* ./
             rm -rf ./repo
 
             echo "Cloned $Z_REPOSITORY repository successfully."
         else
             git clone $Z_REPOSITORY $TARGET_NAME
-            chmod -R 777 ./$TARGET_NAME
 
             echo "Cloned $Z_REPOSITORY repository successfully."
             echo "Access the repository content using \"cd $TARGET_NAME\"."
