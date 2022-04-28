@@ -7,6 +7,22 @@ inputs:
     description: 'Nodejs version'
     required: false
     default: '14'
+  enable_cache:
+    description: 'Enable cache'
+    required: false
+    default: 'false'
+  cache_key:
+    description: 'Cache key'
+    required: false
+    default: 'none'
+  cache_path:
+    description: 'Cache path'
+    required: false
+    default: '**/node_modules'
+  cache_type:
+    description: 'Cache type, npm/yarn default yarn'
+    required: false
+    default: 'yarn'
   script_run:
     description: 'Run build script'
     required: false
@@ -49,6 +65,22 @@ inputs:
   alias_domain:
     description: 'Alias domain name for vercel.app'
     required: false
+  enable_notify_comment:
+    description: 'Enable notify comment for pull request'
+    required: false
+    default: 'false'
+  enable_notify_slack:
+    description: 'Enable notify slack channel'
+    required: false
+    default: 'false'
+  slack_channel:
+    description: 'Slack channel name'
+    required: false
+    default: 'none'
+  slack_webhook:
+    description: 'Slack webhook'
+    required: false
+    default: 'none'
 
 outputs:
   PREVIEW_OUTPUT:
@@ -67,6 +99,27 @@ runs:
       with:
         node-version: ${{ inputs.node_version }}
 
+    - name: Cache yarn
+      uses: actions/cache@v3
+      if: ${{ (inputs.script_run == 'true') && (inputs.enable_cache == 'true') && (inputs.cache_key == 'none') && (inputs.cache_type == 'yarn') }}
+      with:
+        path: ${{ inputs.cache_path }}
+        key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Cache npm
+      uses: actions/cache@v3
+      if: ${{ (inputs.script_run == 'true') && (inputs.enable_cache == 'true') && (inputs.cache_key == 'none') && (inputs.cache_type == 'npm') }}
+      with:
+        path: ${{ inputs.cache_path }}
+        key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Cache custom
+      uses: actions/cache@v3
+      if: ${{ (inputs.script_run == 'true') && (inputs.enable_cache == 'true') && (inputs.cache_key != 'none') }}
+      with:
+        path: ${{ inputs.cache_path }}
+        key: ${{ inputs.cache_key }}
+
     - name: Install dependencies
       shell: bash
       if: ${{ inputs.script_run == 'true' }}
@@ -82,21 +135,49 @@ runs:
         export CI=${{ inputs.env_ci }}
         ${{ inputs.script_build }}
 
+    - name: Current dir name
+      shell: bash
+      id: dir-name
+      run: |
+        DIR_NAME=$(basename "$PWD")
+        echo ''
+        echo "::set-output name=DIR_NAME::$DIR_NAME"
+
+    - name: Repo name
+      shell: bash
+      id: repo-name
+      run: |
+        PROJECT_NAME=${{ inputs.project_name }}
+        REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
+        echo ''
+        echo "::set-output name=REPO_NAME::$REPO_NAME"
+
     - name: Deploy to Vercel
       shell: bash
       id: deploy_vercel
       run: |
         set -xe
         cd ${{ inputs.workdir }}
-        PROJECT_NAME=${{ inputs.project_name }}
-        REPO_NAME=${PROJECT_NAME:-${GITHUB_REPOSITORY#*/}}
+        DIR_NAME=${{ steps.dir-name.outputs.DIR_NAME }}
+        REPO_NAME=${{ steps.repo-name.outputs.REPO_NAME }}
         VERCEL_TOKEN=${{ inputs.vercel_token }}
         VERCEL_GROUP=${{ inputs.vercel_group }}
         PREVIEW_OUTPUT=${{ inputs.preview_output }}
         PROD_MODE=${{ inputs.prod_mode }}
-        ALIAS_DOMAIN=${{ inputs.alias_domain }}
+        DIST_PATH=${{ inputs.dist_path }}
 
-        mv ${{ inputs.dist_path }} ${REPO_NAME}
+        INPUT_ALIAS_DOMAIN='${{ inputs.alias_domain }}'
+        ALL_ALIAS_DOMAIN=$(echo "${INPUT_ALIAS_DOMAIN}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/,/ /g")
+        DOMAIN_IDENTIFY_KEYWORD=.
+
+        if [ "${DIST_PATH}" == "." ]; then
+          cd ..
+          if [ "${DIR_NAME}" != "${REPO_NAME}" ]; then
+            cp -r ${DIR_NAME} ${REPO_NAME}
+          fi
+        else
+          mv ${DIST_PATH} ${REPO_NAME}
+        fi
 
         PATH_VERCEL_JSON=./vercel.json
         if [ -f "${PATH_VERCEL_JSON}" ]; then
@@ -113,21 +194,47 @@ runs:
 
         DEPLOYMENT_URL=$(cat deploy.log)
 
-        if [ -n "${ALIAS_DOMAIN}" ]; then
-          ${VERCEL} alias ${DEPLOYMENT_URL} ${ALIAS_DOMAIN}.vercel.app
-        fi
+        for DOMAIN in ${ALL_ALIAS_DOMAIN}
+        do
+          if test "${DOMAIN#*$DOMAIN_IDENTIFY_KEYWORD}" != "${DOMAIN}"
+          then
+            echo "alias with custom domain: ${DOMAIN}"
+            ${VERCEL} alias ${DEPLOYMENT_URL} ${DOMAIN}
+          else
+            echo "alias with bundle domain: ${DOMAIN}.vercel.app"
+            ${VERCEL} alias ${DEPLOYMENT_URL} ${DOMAIN}.vercel.app
+          fi
+        done
 
         content="${DEPLOYMENT_URL//'%'/'%25'}"
         content="${content//$'\n'/'%0A'}"
         content="${content//$'\r'/'%0D'}"
-        PREVIEW_LINK="${content}${ALIAS_DOMAIN:+ https://${ALIAS_DOMAIN}.vercel.app}"
+        PREVIEW_LINK="${content}"
+
+        for DOMAIN in ${ALL_ALIAS_DOMAIN}
+        do
+          if test "${DOMAIN#*\*}" != "${DOMAIN}"; then
+            continue
+          fi
+          if test "${DOMAIN#*$DOMAIN_IDENTIFY_KEYWORD}" != "${DOMAIN}"
+          then
+            PREVIEW_LINK="${PREVIEW_LINK} https://${DOMAIN}"
+          else
+            PREVIEW_LINK="${PREVIEW_LINK} https://${DOMAIN}.vercel.app"
+          fi
+        done
 
         rm -rf deploy.log
 
         echo ''
 
         if [ -n "${PREVIEW_OUTPUT}" ]; then
+          EVENT_NAME=${{ github.event_name }}
           SHA=${GITHUB_SHA::7}
+          if [ "${EVENT_NAME}" == "pull_request" ]; then
+            SHA=${{ github.event.pull_request.head.sha }}
+            SHA=${SHA::7}
+          fi
           COMMIT="Commit: [${SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SHA})"
           PREVIEW="Preview: ${PREVIEW_LINK}"
 
@@ -151,3 +258,41 @@ runs:
 
         echo ''
         echo "::set-output name=PREVIEW_LINK::$PREVIEW_LINK"
+
+    - name: Restore dir name
+      shell: bash
+      if: always()
+      run: |
+        set -xe
+
+        DIR_NAME=${{ steps.dir-name.outputs.DIR_NAME }}
+        REPO_NAME=${{ steps.repo-name.outputs.REPO_NAME }}
+        DIST_PATH=${{ inputs.dist_path }}
+
+        if [ "${DIST_PATH}" == "." ]; then
+          cd ..
+          if [ "${DIR_NAME}" != "${REPO_NAME}" ]; then
+            rm -rf ${DIR_NAME}
+            mv ${REPO_NAME} ${DIR_NAME}
+          fi
+          cd ${DIR_NAME}
+        fi
+
+    - name: Comment deploy ouput
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: ${{ inputs.enable_notify_comment == 'true' }}
+      with:
+        append: true
+        message: ${{ steps.deploy_vercel.outputs.PREVIEW_OUTPUT }}
+
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      if: ${{ (inputs.enable_notify_slack == 'true') && (inputs.slack_channel != 'none') && (inputs.slack_webhook != 'none') }}
+      env:
+        SLACK_CHANNEL: ${{ inputs.slack_channel }}
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://avatars.githubusercontent.com/u/14985020?s=48&v=4
+        SLACK_MESSAGE: '${{ steps.deploy_vercel.outputs.PREVIEW_LINK }}'
+        SLACK_TITLE: Preview
+        SLACK_USERNAME: Vercel
+        SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
