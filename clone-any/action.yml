@@ -30,7 +30,10 @@ inputs:
     description: 'Clone target dir name'
     required: false
   ref:
-    description: 'Ref'
+    description: 'Git ref'
+    required: false
+  ref_file:
+    description: 'Read ref from a file'
     required: false
 
 runs:
@@ -51,6 +54,11 @@ runs:
         SERVER_HOST=${{ inputs.server_host }}
         ENABLE_SSL=${{ inputs.enable_ssl }}
         GIT_REF=${{ inputs.ref }}
+        GIT_REF_FILE=${{ inputs.ref_file }}
+
+        if [ -z "${GIT_REF}" ]; then
+          GIT_REF=$(cat ${GIT_REF_FILE})
+        fi
 
 
         mkdir -p ~/.ssh
