@@ -40,6 +40,8 @@ runs:
   using: "composite"
   steps:
 
+    - uses: actions/checkout@v2
+
     - name: Clone
       shell: bash
       id: deploy_vercel
@@ -59,7 +61,6 @@ runs:
         if [ -z "${GIT_REF}" ]; then
           GIT_REF=$(cat ${GIT_REF_FILE})
         fi
-
 
         mkdir -p ~/.ssh
 
@@ -99,25 +100,17 @@ runs:
         fi
 
         echo "Repository: ${Z_SAFE_REPOSITORY}"
-        if [ -z "$TARGET_NAME" ]; then
-          # git clone $Z_REPOSITORY .
-          
-          git clone $Z_REPOSITORY repo
-          if [ -n "${GIT_REF}" ]; then
-            git checkout -b ${GIT_REF} origin/${GIT_REF}
-          fi
-          mv ./repo/* ./
-          rm -rf ./repo
 
-          echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
-        else
-          git clone $Z_REPOSITORY $TARGET_NAME
-          if [ -n "${GIT_REF}" ]; then
-            git checkout -b ${GIT_REF} origin/${GIT_REF}
-          fi
+        TARGET_NAME=${TARGET_NAME:-repo}
+        git clone $Z_REPOSITORY $TARGET_NAME
 
-          echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
-          echo "Access the repository content using \"cd $TARGET_NAME\"."
+        if [ -n "${GIT_REF}" ]; then
+          cd ${TARGET_NAME}
+          git checkout -b ${GIT_REF} origin/${GIT_REF}
+          cd ..
         fi
+        mv ${TARGET_NAME}/* ./
+        rm -rf ${TARGET_NAME}
 
+        echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
 
