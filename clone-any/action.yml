@@ -40,8 +40,6 @@ runs:
   using: "composite"
   steps:
 
-    - uses: actions/checkout@v2
-
     - name: Clone
       shell: bash
       id: deploy_vercel
