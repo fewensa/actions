@@ -61,6 +61,11 @@ runs:
         if [ -z "${GIT_REF}" ]; then
           GIT_REF=$(cat ${GIT_REF_FILE})
         fi
+        DIR_NAME=$(basename "$PWD")
+        cd ..
+        rm -rf ${DIR_NAME}
+        mkdir ${DIR_NAME}
+        cd ${DIR_NAME}
 
         mkdir -p ~/.ssh
 
@@ -106,7 +111,7 @@ runs:
 
         if [ -n "${GIT_REF}" ]; then
           cd ${TARGET_NAME}
-          git checkout -b ${GIT_REF} origin/${GIT_REF}
+          git checkout -b ${GIT_REF} origin/${GIT_REF} || true
           cd ..
         fi
         mv ${TARGET_NAME}/* ./
