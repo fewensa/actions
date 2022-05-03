@@ -61,11 +61,7 @@ runs:
         if [ -z "${GIT_REF}" ]; then
           GIT_REF=$(cat ${GIT_REF_FILE})
         fi
-        DIR_NAME=$(basename "$PWD")
-        cd ..
-        rm -rf ${DIR_NAME}
-        mkdir ${DIR_NAME}
-        cd ${DIR_NAME}
+        rm -rf .git
 
         mkdir -p ~/.ssh
 
