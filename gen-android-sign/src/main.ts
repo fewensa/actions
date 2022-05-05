@@ -35,12 +35,13 @@ async function run() {
 
     const pathSigningKey = path.join(finStoreDir, 'signingKey.jks');
     fs.writeFileSync(pathSigningKey, _signingKeyBase64, 'base64');
+    const fullSigningKeyPath = path.resolve(pathSigningKey);
 
     // 2. write properties
     const propertiesValues = [
       `keyAlias=${_alias}`,
       `storePassword=${_keyStorePassword}`,
-      `storeFile=${pathSigningKey}`
+      `storeFile=${fullSigningKeyPath}`,
     ];
     if (_keyPassword != null && _keyPassword != '') {
       propertiesValues.push(`keyPassword=${_keyPassword}`)
