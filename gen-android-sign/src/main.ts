@@ -27,11 +27,13 @@ async function run() {
     if (fs.existsSync(_betterStorePath)) {
       fs.rmSync(_betterStorePath, {force: true, recursive: true});
     }
-    const parentDir = path.basename(path.dirname(_betterStorePath));
-    if (!fs.existsSync(parentDir)) {
-      fs.mkdirSync(parentDir, {recursive: true});
+    const pathArr = _betterStorePath.split('/');
+    const finStoreDir = pathArr.splice(0, pathArr.length -1).join('/');
+    if (!fs.existsSync(finStoreDir)) {
+      fs.mkdirSync(finStoreDir, {recursive: true});
     }
-    const pathSigningKey = path.join(parentDir, 'signingKey.jks');
+
+    const pathSigningKey = path.join(finStoreDir, 'signingKey.jks');
     fs.writeFileSync(pathSigningKey, _signingKeyBase64, 'base64');
 
     // 2. write properties
