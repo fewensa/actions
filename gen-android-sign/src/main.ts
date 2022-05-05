@@ -14,7 +14,6 @@ async function run() {
     const _alias = core.getInput('alias');
     const _keyStorePassword = core.getInput('keyStorePassword');
     const _keyPassword = core.getInput('keyPassword');
-    const _workSpace = core.getEnv('GITHUB_WORKSPACE');
 
 
     let _betterStorePath = _storePath;
@@ -36,12 +35,13 @@ async function run() {
 
     const pathSigningKey = path.join(finStoreDir, 'signingKey.jks');
     fs.writeFileSync(pathSigningKey, _signingKeyBase64, 'base64');
+    const absSigningKeyPath = path.resolve(pathSigningKey);
 
     // 2. write properties
     const propertiesValues = [
       `keyAlias=${_alias}`,
       `storePassword=${_keyStorePassword}`,
-      `storeFile=${_workSpace}/${pathSigningKey}`,
+      `storeFile=${absSigningKeyPath}`,
     ];
     if (_keyPassword != null && _keyPassword != '') {
       propertiesValues.push(`keyPassword=${_keyPassword}`)
