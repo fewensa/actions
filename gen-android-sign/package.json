@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "package": "ncc build --source-map"
+    "package": "ncc build ./lib/main.js -m -C -o ./dist --source-map"
   },
   "repository": {
     "type": "git",
