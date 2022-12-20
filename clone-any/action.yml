@@ -110,6 +110,8 @@ runs:
           git pull origin ${GIT_REF} || true
           cd ..
         fi
+        rm -rf .git
+        mv ${TARGET_NAME}/.git ./
         mv ${TARGET_NAME}/* ./
         rm -rf ${TARGET_NAME}
 
