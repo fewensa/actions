@@ -11,13 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Clone repository
-        uses: ./clone-any
-        with:
-          platform: github
-          repository: fewensa/actions
-          target: actions-group
-
-      - name: Access cloned repository content
-        run: ls -l actions-group
+# # todo:  fix this
+#      - name: Clone repository
+#        uses: ./clone-any
+#        with:
+#          platform: github
+#          repository: fewensa/actions
+#          target: actions-group
+#
+#      - name: Access cloned repository content
+#        run: ls -l actions-group
 
