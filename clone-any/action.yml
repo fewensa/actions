@@ -44,7 +44,7 @@ runs:
       shell: bash
       id: deploy_vercel
       run: |
-        set -e
+        set -xe
         REPOSITORY=${{ inputs.repository }}
         ACCESS_TOKEN=${{ inputs.access_token }}
         SSH_KEY=${{ inputs.ssh_key }}
@@ -104,7 +104,7 @@ runs:
         git clone $Z_REPOSITORY $TARGET_NAME
 
         if [ -n "${GIT_REF}" ]; then
-          cd ${TARGET_NAME} 
+          cd ${TARGET_NAME}
           # git checkout -b ${GIT_REF} origin/${GIT_REF} || true
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
