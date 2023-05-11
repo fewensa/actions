@@ -16,11 +16,12 @@ inputs:
     description: 'build features'
     required: false
     default: ''
+  suffix:
+    description: 'output file suffix'
+    required: false
+    default: ''
 
 outputs:
-  PACKAGE_BINARY_RAW:
-    description: 'Build package binary path (raw binary)'
-    value: ${{ steps.cargo_build.outputs.PACKAGE_BINARY_RAW }}
   PACKAGE_BINARY_BZ2:
     description: 'Build package binary path (tar bz2)'
     value: ${{ steps.cargo_build.outputs.PACKAGE_BINARY_BZ2 }}
@@ -52,6 +53,7 @@ runs:
       run: |
         PACKAGE=${{ inputs.package }}
         FEATURES=${{ inputs.features }}
+        SUFFIX=${{ inputs.suffix }}
 
         cargo build --release --locked \
           ${PACKAGE:+--package=$PACKAGE} \
@@ -64,16 +66,14 @@ runs:
         DIST_PATH=build
         mkdir -p ${DIST_PATH}
 
-        PACKAGE_BINARY_RAW=${DIST_PATH}/${PACKAGE}
-        PACKAGE_BINARY_BZ2=${DIST_PATH}/${PACKAGE}.tar.bz2
-        PACKAGE_BINARY_ZST=${DIST_PATH}/${PACKAGE}.tar.zst
+        PACKAGE_BINARY_BZ2=${DIST_PATH}/${PACKAGE}${SUFFIX:+-$SUFFIX}.tar.bz2
+        PACKAGE_BINARY_ZST=${DIST_PATH}/${PACKAGE}${SUFFIX:+-$SUFFIX}.tar.zst
 
         tar cjSf ${PACKAGE_BINARY_BZ2} -C target/release ${PACKAGE}
         tar cf ${PACKAGE_BINARY_ZST} -C target/release ${PACKAGE} -I zstd
         cp target/release/${PACKAGE} ${DIST_PATH}/
 
         echo ''
-        echo "::set-output name=PACKAGE_BINARY_RAW::$PACKAGE_BINARY_RAW"
         echo "::set-output name=PACKAGE_BINARY_BZ2::$PACKAGE_BINARY_BZ2"
         echo "::set-output name=PACKAGE_BINARY_ZST::$PACKAGE_BINARY_ZST"
 
