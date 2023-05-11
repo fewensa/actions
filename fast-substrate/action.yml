@@ -61,7 +61,7 @@ runs:
           exit 0
         fi
 
-        DIST_PATH=dist
+        DIST_PATH=build
         mkdir -p ${DIST_PATH}
 
         PACKAGE_BINARY_RAW=${DIST_PATH}/${PACKAGE}
