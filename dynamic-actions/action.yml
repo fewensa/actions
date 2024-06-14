@@ -2,7 +2,7 @@ name: 'Trigger Dynamic Actions'
 description: 'Trigger dynamic actions to run you CI'
 inputs:
   dot_github:
-    description: 'The paht for .github'
+    description: 'The path for .github'
     required: false
     default: '.github'
   project_name:
