@@ -114,6 +114,7 @@ runs:
         mv ${TARGET_NAME}/.git ./
         mv ${TARGET_NAME}/* ./
         rm -rf ${TARGET_NAME}
+        ls -la ./
 
         echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
 
