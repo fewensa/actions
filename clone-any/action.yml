@@ -100,20 +100,22 @@ runs:
 
         echo "Repository: ${Z_SAFE_REPOSITORY}"
 
+        CURRENT_PATH=$(pwd)
+        cd ..
+        rm -rf ${CURRENT_PATH}
+
         TARGET_NAME=${TARGET_NAME:-repo}
         git clone $Z_REPOSITORY $TARGET_NAME
+        mv ${TARGET_NAME} ${CURRENT_PATH}
+
+        cd ${CURRENT_PATH}
 
         if [ -n "${GIT_REF}" ]; then
-          cd ${TARGET_NAME}
           # git checkout -b ${GIT_REF} origin/${GIT_REF} || true
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
-          cd ..
         fi
-        rm -rf .git
-        mv ${TARGET_NAME}/.* ./
-        mv ${TARGET_NAME}/* ./
-        rm -rf ${TARGET_NAME}
+        
         ls -la ./
 
         echo "Cloned $Z_SAFE_REPOSITORY repository successfully."

@@ -1,10 +1,46 @@
-name: 'Ansible-se deploy'
+name: 'Ansible deploy'
 
-description: 'Ansible-se deploy'
+description: 'Ansible deploy'
 
 
 inputs:
-  node_version:
-    description: 'Nodejs version'
+  trigger_url:
+    description: 'trigger url'
+    required: true
+  trigger_token: 
+    description: 'trigger token'
+    required: true
+  changes:
+    description: 'trigger changes'
+    required: true
+  project_name:
+    description: 'project name'
     required: false
-    default: '14'
+
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Deploy
+      shell: bash
+      run: |
+        set -xe
+        PROJECT_NAME=${PROJECT_NAME:-$CI_PROJECT_NAME}
+        COMMIT_MSG=${COMMIT_MSG:-${CI_COMMIT_MESSAGE}}
+
+        export DESCRIPTION="Actions Context:
+        * Actor: ${GITLAB_USER_NAME}
+        * Git Ref: ${CI_COMMIT_REF_SLUG}
+        * Build started at: ${CI_JOB_STARTED_AT}
+        * Source: ${CI_PIPELINE_SOURCE}
+        * Workflow: ${CI_JOB_URL}
+        * All workflows: ${CI_PIPELINE_URL}
+        "
+        echo "$DESCRIPTION"
+
+        if [ -f "${TRIGGER_CHANGES}" ]; then
+          TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
+        fi
+
+
