@@ -111,7 +111,7 @@ runs:
           cd ..
         fi
         rm -rf .git
-        mv ${TARGET_NAME}/.git ./
+        mv ${TARGET_NAME}/.* ./
         mv ${TARGET_NAME}/* ./
         rm -rf ${TARGET_NAME}
         ls -la ./
