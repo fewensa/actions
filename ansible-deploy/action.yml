@@ -1,0 +1,10 @@
+name: 'Ansible-se deploy'
+
+description: 'Ansible-se deploy'
+
+
+inputs:
+  node_version:
+    description: 'Nodejs version'
+    required: false
+    default: '14'
