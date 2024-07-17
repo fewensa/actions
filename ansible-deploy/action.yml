@@ -44,14 +44,18 @@ runs:
         set -xe
         INPUT_PROJECT_NAME=${{ inputs.project_name }}
         INPUT_COMMIT_MESSAGE="${{ inputs.commit_message }}"
-        INPUT_AC_GIT_REF: ${{ inputs.ac_git_ref }}
-        INPUT_TRIGGER_URL: ${{ inputs.trigger_url }}
-        INPUT_TRIGGER_TOKEN: ${{ inputs.trigger_token }}
+        INPUT_AC_GIT_REF=${{ inputs.ac_git_ref }}
+        INPUT_TRIGGER_URL=${{ inputs.trigger_url }}
+        INPUT_TRIGGER_TOKEN=${{ inputs.trigger_token }}
         DEFAULT_COMMIT_MESSAGE="${{ github.event.inputs.message }}"
 
         PROJECT_NAME=${INPUT_PROJECT_NAME:-$DEFAULT_PROJECT_NAME}
         COMMIT_MSG=${INPUT_COMMIT_MESSAGE:-$DEFAULT_COMMIT_MESSAGE}
-        AC_GIT_REF: ${INPUT_AC_GIT_REF:-$DEFAULT_BRANCH_NAME}
+
+        if [ -f "${INPUT_AC_GIT_REF}" ]; then
+          INPUT_AC_GIT_REF=$(cat ${INPUT_AC_GIT_REF})
+        fi
+        AC_GIT_REF=${INPUT_AC_GIT_REF:-$DEFAULT_BRANCH_NAME}
 
         export DESCRIPTION="Actions Context:
         * Actor: ${{ github.actor }}
