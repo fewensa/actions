@@ -38,6 +38,8 @@ runs:
     - name: set id
       id: jobs
       uses: ayachensiyuan/get-action-job-id@v1.6
+      env: 
+    	  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         job-name: "${{ github.job }}"
 
