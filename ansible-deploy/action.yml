@@ -69,7 +69,7 @@ runs:
 
         curl -fsSL -o /dev/null -X POST \
           --retry 5 --retry-connrefused --retry-delay 10 \
-          -F "token=$CI_TRIGGER_TOKEN" \
+          -F "token=$INPUT_TRIGGER_TOKEN" \
           -F "ref=main" \
           -F "variables[DEPLOY_MODE]=ansible" \
           -F "variables[DEPLOY_PROJECT]=${{ github.repository }}" \
