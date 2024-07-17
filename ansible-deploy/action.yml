@@ -68,7 +68,7 @@ runs:
         * Git Ref: ${AC_GIT_REF}
         * Build started at: ${{ github.event.head_commit.timestamp }}
         * Source: ${{ github.event_name }}
-        * workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        * Workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         "
         echo "$DESCRIPTION"
 
@@ -76,8 +76,7 @@ runs:
           TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
         fi
 
-        # -o /dev/null 
-        curl -fsSL -X POST \
+        curl -fsSL -o /dev/null -X POST \
           --retry 5 --retry-connrefused --retry-delay 10 \
           -F "token=$INPUT_TRIGGER_TOKEN" \
           -F "ref=main" \
