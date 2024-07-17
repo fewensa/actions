@@ -35,6 +35,12 @@ runs:
       id: branch-names
       uses: tj-actions/branch-names@v8
 
+    - name: Get Current Job Log URL
+      uses: Tiryoh/gha-jobid-action@v1
+      id: jobs
+      with:
+        job_name: "${{ github.job }}"
+
     - name: Deploy
       shell: bash
       env:
@@ -64,7 +70,7 @@ runs:
         * Git Ref: ${AC_GIT_REF}
         * Build started at: ${{ github.event.head_commit.timestamp }}
         * Source: ${{ github.event_name }}
-        * Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job_id }}
+        * Workflow: ${{ steps.jobs.outputs.html_url }}
         * All workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         "
         echo "$DESCRIPTION"
