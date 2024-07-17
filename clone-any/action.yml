@@ -117,7 +117,7 @@ runs:
           git pull origin ${GIT_REF} || true
         fi
 
-        ls -la ./
+        # ls -la ./
 
         echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
 
