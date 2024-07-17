@@ -16,31 +16,67 @@ inputs:
   project_name:
     description: 'project name'
     required: false
-
+  commit_message:
+    description: 'commit message'
+    required: false
+  ac_git_ref:
+    description: 'action context: git ref'
+    required: false
 
 runs:
   using: "composite"
   steps:
 
+    - name: Get repository name
+      id: repo-name
+      uses: MariachiBear/get-repo-name-action@v1.1.0
+
+    - name: Get branch names.
+      id: branch-names
+      uses: tj-actions/branch-names@v8
+
     - name: Deploy
       shell: bash
+      env:
+        DEFAULT_PROJECT_NAME: ${{ steps.repo-name.outputs.repository-name }}
+        DEFAULT_BRANCH_NAME: ${{ steps.branch-names.outputs.current_branch }}
       run: |
         set -xe
-        PROJECT_NAME=${PROJECT_NAME:-$CI_PROJECT_NAME}
-        COMMIT_MSG=${COMMIT_MSG:-${CI_COMMIT_MESSAGE}}
+        INPUT_PROJECT_NAME=${{ inputs.project_name }}
+        INPUT_COMMIT_MESSAGE="${{ inputs.commit_message }}"
+        INPUT_AC_GIT_REF: ${{ inputs.ac_git_ref }}
+        INPUT_TRIGGER_URL: ${{ inputs.trigger_url }}
+        INPUT_TRIGGER_TOKEN: ${{ inputs.trigger_token }}
+        DEFAULT_COMMIT_MESSAGE="${{ github.event.inputs.message }}"
+
+        PROJECT_NAME=${INPUT_PROJECT_NAME:-$DEFAULT_PROJECT_NAME}
+        COMMIT_MSG=${INPUT_COMMIT_MESSAGE:-$DEFAULT_COMMIT_MESSAGE}
+        AC_GIT_REF: ${INPUT_AC_GIT_REF:-$DEFAULT_BRANCH_NAME}
 
         export DESCRIPTION="Actions Context:
-        * Actor: ${GITLAB_USER_NAME}
-        * Git Ref: ${CI_COMMIT_REF_SLUG}
-        * Build started at: ${CI_JOB_STARTED_AT}
-        * Source: ${CI_PIPELINE_SOURCE}
-        * Workflow: ${CI_JOB_URL}
-        * All workflows: ${CI_PIPELINE_URL}
+        * Actor: ${{ github.actor }}
+        * Git Ref: ${AC_GIT_REF}
+        * Build started at: ${{ github.event.head_commit.timestamp }}
+        * Source: ${{ github.event_name }}
+        * Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
+        * All workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         "
         echo "$DESCRIPTION"
 
         if [ -f "${TRIGGER_CHANGES}" ]; then
           TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
         fi
+
+        curl -fsSL -o /dev/null -X POST \
+          --retry 5 --retry-connrefused --retry-delay 10 \
+          -F "token=$CI_TRIGGER_TOKEN" \
+          -F "ref=main" \
+          -F "variables[DEPLOY_MODE]=ansible" \
+          -F "variables[DEPLOY_PROJECT]=${{ github.repository }}" \
+          -F "variables[TRIGGER_CHANGES]=$TRIGGER_CHANGES" \
+          -F "variables[DEPLOY_DESCRIPTION]=$DESCRIPTION" \
+          -F "variables[TRIGGER_MESSAGE]=$COMMIT_MSG" \
+          "$INPUT_TRIGGER_URL"
+
 
 
