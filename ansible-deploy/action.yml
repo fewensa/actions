@@ -31,7 +31,7 @@ runs:
       id: repo-name
       uses: MariachiBear/get-repo-name-action@v1.1.0
 
-    - name: Get branch names.
+    - name: Get branch names
       id: branch-names
       uses: tj-actions/branch-names@v8
 
@@ -81,7 +81,7 @@ runs:
           -F "token=$INPUT_TRIGGER_TOKEN" \
           -F "ref=main" \
           -F "variables[DEPLOY_MODE]=ansible" \
-          -F "variables[DEPLOY_PROJECT]=${{ github.repository }}" \
+          -F "variables[DEPLOY_PROJECT]=${PROJECT_NAME}" \
           -F "variables[TRIGGER_CHANGES]=$TRIGGER_CHANGES" \
           -F "variables[DEPLOY_DESCRIPTION]=$DESCRIPTION" \
           -F "variables[TRIGGER_MESSAGE]=$COMMIT_MSG" \
