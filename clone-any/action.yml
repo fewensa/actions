@@ -102,11 +102,12 @@ runs:
 
         CURRENT_PATH=$(pwd)
         cd ..
-        rm -rf ${CURRENT_PATH}
+        mv ${CURRENT_PATH} ./__origin__
 
         TARGET_NAME=${TARGET_NAME:-repo}
         git clone $Z_REPOSITORY $TARGET_NAME
         mv ${TARGET_NAME} ${CURRENT_PATH}
+        mv __origin__ ${CURRENT_PATH}
 
         cd ${CURRENT_PATH}
 
@@ -115,7 +116,7 @@ runs:
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
         fi
-        
+
         ls -la ./
 
         echo "Cloned $Z_SAFE_REPOSITORY repository successfully."
