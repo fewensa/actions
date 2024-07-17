@@ -103,6 +103,7 @@ runs:
         CURRENT_PATH=$(pwd)
         cd ..
         mv ${CURRENT_PATH} ./__origin__
+        echo '/*' > __origin__/.gitignore
 
         TARGET_NAME=${TARGET_NAME:-repo}
         git clone $Z_REPOSITORY $TARGET_NAME
