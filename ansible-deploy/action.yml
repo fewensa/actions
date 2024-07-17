@@ -50,13 +50,17 @@ runs:
         INPUT_CHANGES=${{ inputs.changes }}
         DEFAULT_COMMIT_MESSAGE="${{ github.event.inputs.message }}"
 
-        PROJECT_NAME=${INPUT_PROJECT_NAME:-$DEFAULT_PROJECT_NAME}
-        COMMIT_MSG=${INPUT_COMMIT_MESSAGE:-$DEFAULT_COMMIT_MESSAGE}
-        TRIGGER_CHANGES=${INPUT_CHANGES}
+        if [ -f "${INPUT_COMMIT_MESSAGE}" ]; then
+          INPUT_COMMIT_MESSAGE=$(cat ${INPUT_COMMIT_MESSAGE})
+        fi
 
         if [ -f "${INPUT_AC_GIT_REF}" ]; then
           INPUT_AC_GIT_REF=$(cat ${INPUT_AC_GIT_REF})
         fi
+        
+        PROJECT_NAME=${INPUT_PROJECT_NAME:-$DEFAULT_PROJECT_NAME}
+        TRIGGER_CHANGES=${INPUT_CHANGES}
+        COMMIT_MSG=${INPUT_COMMIT_MESSAGE:-$DEFAULT_COMMIT_MESSAGE}
         AC_GIT_REF=${INPUT_AC_GIT_REF:-$DEFAULT_BRANCH_NAME}
 
         export DESCRIPTION="Actions Context:
@@ -72,7 +76,8 @@ runs:
           TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
         fi
 
-        curl -fsSL -o /dev/null -X POST \
+        # -o /dev/null 
+        curl -fsSL -X POST \
           --retry 5 --retry-connrefused --retry-delay 10 \
           -F "token=$INPUT_TRIGGER_TOKEN" \
           -F "ref=main" \
