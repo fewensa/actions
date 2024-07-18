@@ -8,7 +8,7 @@ inputs:
     required: true
   content:
     description: 'content'
-    required: true
+    required: false
   summary:
     description: 'summary'
     required: false
@@ -55,15 +55,19 @@ runs:
         INPUT_VERIFY_PAY_TYPE='${{ inputs.verify_pay_type }}'
 
         DEFAULT_URL='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        DEFAULT_SUMMARY='wxpusher action'
+        DEFAULT_CONTENT="trigger by wxpusher action -> ${DEFAULT_URL}"
 
         TOPICS=$(echo "${INPUT_TOPIC}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
         UIDS=$(echo "${INPUT_UID}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
         URL=${INPUT_URL:-$DEFAULT_URL}
+        SUMMARY=${INPUT_SUMMARY:-$DEFAULT_SUMMARY}
+        CONTENT=${INPUT_CONTENT:-$DEFAULT_CONTENT}
 
         BODY=$(
         jq -n --arg appToken "$INPUT_TOKEN" \
-              --arg content "$INPUT_CONTENT" \
-              --arg summary "$INPUT_SUMMARY" \
+              --arg content "$CONTENT" \
+              --arg summary "$SUMMARY" \
               --argjson contentType "$INPUT_CONTENT_TYPE" \
               --arg url "$URL" \
               --argjson verifyPay "$INPUT_VERIFY_PAY" \
