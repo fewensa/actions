@@ -95,7 +95,7 @@ runs:
         )
 
         R_SUCCESS=$(echo $RESPONSE | jq '.success')
-        if [[ "success" == "${R_SUCCESS}" ]]; then
+        if [[ "true" == "${R_SUCCESS}" ]]; then
           echo "RESPONSE=${RESPONSE}" >> $GITHUB_OUTPUT
           exit 0
         fi
