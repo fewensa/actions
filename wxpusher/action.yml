@@ -59,7 +59,9 @@ runs:
         DEFAULT_CONTENT="
         ## Summary
         ${INPUT_SUMMARY}
+
         ---
+        
         trigger by wxpusher action from project (${{ github.repository }}) -> [${DEFAULT_URL}](${DEFAULT_URL})
         "
 
