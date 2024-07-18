@@ -84,8 +84,9 @@ runs:
         )
 
         RESPONSE=$(
-          curl -X POST --location='https://wxpusher.zjiecode.com/api/send/message' \
+          curl -X POST \
             --header='Content-Type: application/json' \
+            https://wxpusher.zjiecode.com/api/send/message \
             --data="${BODY}"
         )
 
