@@ -85,9 +85,9 @@ runs:
 
         RESPONSE=$(
           curl -X POST \
-            --header='Content-Type: application/json' \
+            -H 'Content-Type: application/json' \
             https://wxpusher.zjiecode.com/api/send/message \
-            --data="${BODY}"
+            -d "${BODY}"
         )
 
         R_SUCCESS=$(echo $RESPONSE | jq '.success')
