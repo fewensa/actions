@@ -56,7 +56,7 @@ runs:
 
         DEFAULT_URL='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         DEFAULT_SUMMARY='wxpusher action'
-        DEFAULT_CONTENT="trigger by wxpusher action -> ${DEFAULT_URL}"
+        DEFAULT_CONTENT="trigger by wxpusher action from project (${{ github.repository }}) -> ${DEFAULT_URL}"
 
         TOPICS=$(echo "${INPUT_TOPIC}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
         UIDS=$(echo "${INPUT_UID}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
