@@ -9,6 +9,12 @@ inputs:
   content:
     description: 'content'
     required: true
+  summary:
+    description: 'summary'
+    required: false
+  content_type:
+    description: 'content type, 1. text, 2. html, 3. markdown(default)'
+    default: 3
   topic:
     description: 'topics'
     required: false
@@ -40,6 +46,8 @@ runs:
 
         INPUT_TOKEN='${{ inputs.token }}'
         INPUT_CONTENT='${{ inputs.content }}'
+        INPUT_CONTENT_TYPE='${{ inputs.content_type }}'
+        INPUT_SUMMARY='${{ inputs.summary }}'
         INPUT_TOPIC='${{ inputs.topic }}'
         INPUT_UID='${{ inputs.uid }}'
         INPUT_URL='${{ inputs.url }}'
@@ -50,15 +58,15 @@ runs:
         UIDS=$(echo "${INPUT_UID}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
 
         BODY=$(
-        jq -n --arg appToken "$appToken" \
-              --arg content "$content" \
-              --arg summary "$summary" \
-              --argjson contentType "$contentType" \
-              --arg url "$url" \
-              --argjson verifyPay "$verifyPay" \
-              --argjson verifyPayType "$verifyPayType" \
-              --arg topicIds "$topicIds" \
-              --arg uids "$uids" \
+        jq -n --arg appToken "$INPUT_TOKEN" \
+              --arg content "$INPUT_CONTENT" \
+              --arg summary "$INPUT_SUMMARY" \
+              --argjson contentType "$INPUT_CONTENT_TYPE" \
+              --arg url "$INPUT_URL" \
+              --argjson verifyPay "$INPUT_VERIFY_PAY" \
+              --argjson verifyPayType "$INPUT_VERIFY_PAY_TYPE" \
+              --arg topicIds "$TOPICS" \
+              --arg uids "$UIDS" \
         '{
           appToken: $appToken,
           content: $content,
@@ -69,7 +77,7 @@ runs:
           verifyPayType: $verifyPayType
         }
         + (if $topicIds | length > 0 then { topicIds: ($topicIds | split(",") | map(tonumber)) } else {} end)
-        + (if $uids | length > 0 then { uids: ($uids | split(",") | map(tonumber)) } else {} end)'
+        + (if $uids | length > 0 then { uids: ($uids | split(",")) } else {} end)'
         )
 
         RESPONSE=$(
