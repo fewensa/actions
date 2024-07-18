@@ -57,8 +57,8 @@ runs:
         DEFAULT_URL='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         DEFAULT_SUMMARY='wxpusher action'
         DEFAULT_CONTENT="
-        ## Summary
-        
+        Summary:
+
         ${INPUT_SUMMARY}
 
         ---
