@@ -23,7 +23,7 @@ inputs:
     required: false
   url:
     description: 'wxpusher api'
-    default: 'https://wxpusher.zjiecode.com'
+    required: false
   verify_pay:
     description: 'verify pay'
     default: 'false'
@@ -54,15 +54,18 @@ runs:
         INPUT_VERIFY_PAY='${{ inputs.verify_pay }}'
         INPUT_VERIFY_PAY_TYPE='${{ inputs.verify_pay_type }}'
 
+        DEFAULT_URL='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
         TOPICS=$(echo "${INPUT_TOPIC}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
         UIDS=$(echo "${INPUT_UID}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
+        URL=${INPUT_URL:-$DEFAULT_URL}
 
         BODY=$(
         jq -n --arg appToken "$INPUT_TOKEN" \
               --arg content "$INPUT_CONTENT" \
               --arg summary "$INPUT_SUMMARY" \
               --argjson contentType "$INPUT_CONTENT_TYPE" \
-              --arg url "$INPUT_URL" \
+              --arg url "$URL" \
               --argjson verifyPay "$INPUT_VERIFY_PAY" \
               --argjson verifyPayType "$INPUT_VERIFY_PAY_TYPE" \
               --arg topicIds "$TOPICS" \
