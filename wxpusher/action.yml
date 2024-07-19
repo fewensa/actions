@@ -63,7 +63,7 @@ runs:
 
         ---
 
-        trigger by wxpusher action from project (${{ github.repository }}) -> [${DEFAULT_URL}](${DEFAULT_URL})
+        trigger by wxpusher action from action [${{ github.repository }}#${{ github.run_id }}](${DEFAULT_URL})
         "
 
         TOPICS=$(echo "${INPUT_TOPIC}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
