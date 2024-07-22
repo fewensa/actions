@@ -99,18 +99,15 @@ runs:
         fi
 
         echo "Repository: ${Z_SAFE_REPOSITORY}"
-
-        CURRENT_PATH=$(pwd)
-        cd ..
-        mv ${CURRENT_PATH} ./__origin__
-        echo '/*' > __origin__/.gitignore
+        
+        echo '/*' > .gitignore
+        mkdir __origin__
+        find . -maxdepth 1 ! -path './__origin__' ! -path '.' -exec mv {} __origin__/ \;
 
         TARGET_NAME=${TARGET_NAME:-repo}
         git clone $Z_REPOSITORY $TARGET_NAME
-        mv ${TARGET_NAME} ${CURRENT_PATH}
-        mv __origin__ ${CURRENT_PATH}
 
-        cd ${CURRENT_PATH}
+        find ${TARGET_NAME} -mindepth 1 -maxdepth 1 -exec mv {} . \;
 
         if [ -n "${GIT_REF}" ]; then
           # git checkout -b ${GIT_REF} origin/${GIT_REF} || true
