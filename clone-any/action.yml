@@ -108,13 +108,13 @@ runs:
         git clone $Z_REPOSITORY $TARGET_NAME
 
         find ${TARGET_NAME} -mindepth 1 -maxdepth 1 -exec mv {} . \;
+        git config --global --add safe.directory ${{ github.workspace }}
 
         if [ -n "${GIT_REF}" ]; then
           # git checkout -b ${GIT_REF} origin/${GIT_REF} || true
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
         fi
-        git config --global --add safe.directory ${{ github.workspace }}
 
         # ls -la ./
 
