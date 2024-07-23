@@ -109,6 +109,11 @@ runs:
 
         find ${TARGET_NAME} -mindepth 1 -maxdepth 1 -exec mv {} . \;
         git config --global --add safe.directory ${{ github.workspace }}
+        git config --global --add safe.directory ${{ github.action_path }}
+        git config --global --add safe.directory ${GITHUB_ACTION_PATH}
+        if [ -d "/__w" ]; then
+          git config --global --add safe.directory /__w
+        fi
 
         if [ -n "${GIT_REF}" ]; then
           # git checkout -b ${GIT_REF} origin/${GIT_REF} || true
