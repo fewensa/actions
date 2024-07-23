@@ -114,6 +114,7 @@ runs:
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
         fi
+        git config --global --add safe.directory ${{ github.workspace }}
 
         # ls -la ./
 
