@@ -96,7 +96,7 @@ runs:
         )
 
         RESPONSE=$(
-          curl -vvv -X POST \
+          curl -X POST \
             -H 'Content-Type: application/json' \
             https://wxpusher.zjiecode.com/api/send/message \
             -d "${BODY}"
