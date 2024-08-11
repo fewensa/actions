@@ -61,6 +61,8 @@ runs:
 
         ${INPUT_SUMMARY}
 
+        ${INPUT_CONTENT}
+
         ---
 
         trigger by action [${{ github.repository }}#${{ github.run_id }}](${DEFAULT_URL})
@@ -70,7 +72,8 @@ runs:
         UIDS=$(echo "${INPUT_UID}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
         URL=${INPUT_URL:-$DEFAULT_URL}
         SUMMARY=${INPUT_SUMMARY:-$DEFAULT_SUMMARY}
-        CONTENT=${INPUT_CONTENT:-$DEFAULT_CONTENT}
+        #CONTENT=${INPUT_CONTENT:-$DEFAULT_CONTENT}
+        CONTENT=${DEFAULT_CONTENT}
 
         BODY=$(
         jq -n --arg appToken "$INPUT_TOKEN" \
