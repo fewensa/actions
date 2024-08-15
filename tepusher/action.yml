@@ -15,6 +15,11 @@ inputs:
     required: true
     default: 'weplusbot'
 
+  metapath:
+    description: 'metadata files path'
+    required: false
+    default: '__origin__/.github'
+
   token:
     description: 'provider token'
     required: true
@@ -60,12 +65,41 @@ runs:
 
         echo "TEMPLATE=${PERSIST_TEMPLATE_FILE}" >> $GITHUB_OUTPUT
 
+
+    - name: Get branch names.
+      id: branch-names
+      uses: tj-actions/branch-names@v8
+
+    - uses: fewensa/actions/read-files@main
+      id: read-files
+      with:
+        paths: ${{ inputs.metapath }}
+        enable-segment: true
+        shrink-line: true
+
+
+    - name: Prepare vars
+      shell: bash
+      run: |
+        INPUT_VARS=$(cat << EOF
+        ${{ inputs.vars }}
+        EOF
+        )
+        VARS_FILE=_____tepusher_____/vars.yml
+        echo "${INPUT_VARS}" >> ${VARS_FILE}
+        echo 'branch: ${{ steps.branch-names.outputs.current_branch }}' >> ${VARS_FILE}
+        echo 'github_branch: ${{ steps.branch-names.outputs.current_branch }}' >> ${VARS_FILE}
+        echo 'metadata: "${{ steps.read-files.outputs.content_escape }}"' >> ${VARS_FILE}
+        echo 'workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> ${VARS_FILE}
+
+
+
     - name: Render template
       id: render_template
       uses: chuhlomin/render-template@v1
       with:
         template: ${{ steps.prepare_template.outputs.TEMPLATE }}
-        vars: ${{ inputs.vars }}
+        vars_path: _____tepusher_____/vars.yml
 
     - name: Push message
       uses: fewensa/actions/weplusbot@main
