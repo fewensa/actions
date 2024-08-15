@@ -109,11 +109,21 @@ function parseAlias() {
   }
 }
 
+async function _stdContent(content) {
+  if (!content) return content;
+  const inputShrinkLine = _input('shrink-line');
+  const enableShrinkLine = inputShrinkLine === 'true';
+  return enableShrinkLine
+    ? content.replaceAll('\r', ' ').replaceAll('\n', ' ')
+    : content;
+}
+
 async function main() {
   const paths = await parsePaths();
   core.info(`detected paths: [${paths.join(',')}]`);
   const alias = parseAlias();
   const inputEnableSegment = _input('enable-segment');
+  const inputSegmentDirection = _input('segment-format');
   // const regularExpression = _input('pattern');
   // const pattern = new RegExp(regularExpression);
   const enableSegment = inputEnableSegment === 'true';
@@ -123,12 +133,18 @@ async function main() {
   const outputs = [];
 
   for (const mfp of paths) {
-    const content = await fs.readFile(mfp, 'utf-8');
-    if (enableSegment) {
-      outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
+    const rawContent = await fs.readFile(mfp, 'utf-8');
+    const content = _stdContent(rawContent);
+    const pathName = _pickAlias(alias, mfp);
+    if (inputSegmentDirection === 'vertical') {
+      outputs.push(`${pathName}: ${content}`);
+    } else {
+      if (enableSegment) {
+        outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
+      }
+      outputs.push(content);
+      core.info(`append path ${mfp} to result`);
     }
-    outputs.push(content);
-    core.info(`append path ${mfp} to result`);
   }
 
   const content = outputs.join('\n');

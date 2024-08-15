@@ -22,6 +22,14 @@ inputs:
     description: 'enable segment'
     required: false
     default: 'false'
+  segment-format:
+    description: 'segment format, {vertical, horizontal}'
+    required: false
+    default: 'vertical'
+  shrink-line:
+    description: 'shrink line, replace \n to space default is false'
+    required: false
+    default: 'false'
   enable-list-dir:
     description: 'enable list dir'
     required: false
