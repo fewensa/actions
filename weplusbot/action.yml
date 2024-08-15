@@ -61,13 +61,22 @@ runs:
         INPUT_URL='${{ inputs.url }}'
 
         ATERS=$(echo "${INPUT_ATERS}" | sed ":a;$!N;s/\n/ /g;ba" | sed "s/ /,/g")
+        TITLE=${INPUT_TITLE}
+        CONTENT=${INPUT_CONTENT}
+
+        if [[ -f "${CONTENT}" ]]; then
+          CONTENT=$(cat ${CONTENT});
+        fi
+        if [[ -f "${TITLE}" ]]; then
+          TITLE=$(cat ${TITLE});
+        fi
 
         BODY=$(
         jq -n --arg token "$INPUT_TOKEN" \
               --arg receiver "$INPUT_RECEIVER" \
               --arg version "$INPUT_VERSION" \
-              --arg content "$INPUT_CONTENT" \
-              --arg title "$INPUT_TITLE" \
+              --arg content "$CONTENT" \
+              --arg title "$TITLE" \
               --arg template "$INPUT_TEMPLATE" \
               --arg ATERS "$ATERS" \
               --arg cover "$INPUT_COVER" \

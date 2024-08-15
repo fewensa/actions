@@ -1,0 +1,75 @@
+
+name: 'Tepusher'
+
+description: 'tepusher push message'
+
+inputs:
+  template:
+    description: 'template name(path) or content'
+    required: true
+  vars:
+    description: 'variables'
+    required: false
+  provider:
+    description: 'notify provider {weplusbot(default), wxpusher}'
+    required: true
+    default: 'weplusbot'
+
+  token:
+    description: 'provider token'
+    required: true
+  receiver:
+    description: 'receiver'
+    required: false
+  aters:
+    description: 'aters'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare template
+      id: prepare_template
+      shell: bash
+      run: |
+        INPUT_TEMPLATE='${{ inputs.template }}'
+
+        if [[ -z "$INPUT_TEMPLATE" ]]; then
+          echo 'missing template'
+          exit 1
+        fi
+
+        PERSIST_TEMPLATE_FILE=_____tepusher_____.local.txt
+        echo '*.local.*' >> .gitignore
+
+        if [[ "$INPUT_TEMPLATE" =~ ^https?:// ]]; then
+          curl -L -o $PERSIST_TEMPLATE_FILE $INPUT_TEMPLATE
+        else
+          if [[ -f "$INPUT_TEMPLATE" ]]; then
+              PERSIST_TEMPLATE_FILE=$INPUT_TEMPLATE;
+            else
+              echo "$INPUT_TEMPLATE" > $PERSIST_TEMPLATE_FILE
+          fi
+        fi
+
+        echo "TEMPLATE=${PERSIST_TEMPLATE_FILE}" >> $GITHUB_OUTPUT
+
+      - name: Render template
+        id: render_template
+        uses: chuhlomin/render-template@v1
+        with:
+          template: ${{ steps.prepare_template.outputs.TEMPLATE }}
+          vars: ${{ inputs.vars }}
+
+      - name: Push message
+        uses: fewensa/actions/weplusbot@main
+        if: ${{ inputs.provider == 'weplusbot' }}
+        with:
+          token: ${{ inputs.token }}
+          receiver: ${{ inputs.receiver }}
+          version: 'personal'
+          content: ${{ steps.prepare_template.outputs.TEMPLATE }}
+          template: txt
+          aters: ${{ inputs.aters }}
+
+          
