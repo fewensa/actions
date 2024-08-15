@@ -26966,7 +26966,7 @@ async function main() {
     const content = _stdContent(rawContent);
     const pathName = _pickAlias(alias, mfp);
     if (inputSegmentDirection === 'vertical') {
-      outputs.push(`${pathName}: ${content}`);
+      outputs.push(`- ${pathName}: ${content}`);
     } else {
       if (enableSegment) {
         outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
