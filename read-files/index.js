@@ -111,12 +111,12 @@ async function main() {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
     }
     outputs.push(content);
-    core.debug(`append path ${mfp} to result`);
+    // core.debug(`append path ${mfp} to result`);
   }
 
   const content = outputs.join('\n');
   core.setOutput('content', content);
-  core.debug(content);
+  // core.debug(content);
 }
 
 main().catch((err) => core.setFailed(err.message));
