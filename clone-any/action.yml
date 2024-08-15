@@ -99,7 +99,7 @@ runs:
         fi
 
         echo "Repository: ${Z_SAFE_REPOSITORY}"
-        
+
         echo '/*' > .gitignore
         mkdir __origin__
         find . -maxdepth 1 ! -path './__origin__' ! -path '.' -exec mv {} __origin__/ \;
@@ -121,6 +121,8 @@ runs:
           git checkout ${GIT_REF} || true
           git pull origin ${GIT_REF} || true
         fi
+
+        echo '__origin__' >> .gitignore
 
         # ls -la ./
 
