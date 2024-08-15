@@ -59,6 +59,7 @@ async function _extraPaths(paths, dep = 0) {
   const rets = [];
   for (const path of paths) {
     const stat = await fs.stat(path);
+    core.debug(`${path} ${stat} ${stat.isDiscovery()} ${enableListDir}`);
     if (stat.isFile()) {
       const lowercasePath = path.toLowerCase();
       const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
