@@ -94,6 +94,7 @@ function parseAlias() {
 
 async function main() {
   const paths = await parsePaths();
+  core.debug(`detected paths: ${paths}`);
   const alias = parseAlias();
   const inputEnableSegment = core.getInput('enable-segment');
   // const regularExpression = core.getInput('pattern');
@@ -110,9 +111,12 @@ async function main() {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
     }
     outputs.push(content);
+    core.debug(`append path ${mfp} to result`);
   }
 
-  core.setOutput('content', outputs.join('\n'))
+  const content = outputs.join('\n');
+  core.setOutput('content', content);
+  core.debug(content);
 }
 
 main().catch((err) => core.setFailed(err.message));
