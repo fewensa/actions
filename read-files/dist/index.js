@@ -26874,7 +26874,7 @@ function _formatArrayText(text) {
 
 function _pickAlias(alias, path) {
   for (const apath of Object.keys(alias)) {
-    if (apath.endsWith(path)) {
+    if (path.endsWith(apath)) {
       return alias[apath];
     }
   }
