@@ -5,7 +5,7 @@ branding:
   icon: 'file'
   color: yellow
 inputs:
-  files:
+  paths:
     description: 'File paths'
     required: true
   pattern:

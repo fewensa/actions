@@ -59,16 +59,16 @@ async function _extraPaths(paths, dep = 0) {
 }
 
 async function parsePaths() {
-  const path = core.getInput('path', { required: true });
+  const inputPaths = core.getInput('paths', { required: true });
   let paths;
   try {
-    paths = JSON.parse(path);
+    paths = JSON.parse(inputPaths);
     if (paths && paths.length) {
       return await _extraPaths(paths);
     }
   } catch (e) {
   }
-  paths = _formatArrayText(path);
+  paths = _formatArrayText(inputPaths);
   return await _extraPaths(paths);
 }
 
@@ -104,10 +104,6 @@ async function main() {
   const outputs = [];
 
   for (const mfp of matchingFilePaths) {
-    const stat = await fs.stat(mfp);
-    if (!stat.isFile()) {
-      continue;
-    }
     const content = await fs.readFile(mfp, 'utf-8');
     if (enableSegment) {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);

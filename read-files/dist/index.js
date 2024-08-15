@@ -26917,16 +26917,16 @@ async function _extraPaths(paths, dep = 0) {
 }
 
 async function parsePaths() {
-  const path = core_default().getInput('path', { required: true });
+  const inputPaths = core_default().getInput('paths', { required: true });
   let paths;
   try {
-    paths = JSON.parse(path);
+    paths = JSON.parse(inputPaths);
     if (paths && paths.length) {
       return await _extraPaths(paths);
     }
   } catch (e) {
   }
-  paths = _formatArrayText(path);
+  paths = _formatArrayText(inputPaths);
   return await _extraPaths(paths);
 }
 
@@ -26962,10 +26962,6 @@ async function main() {
   const outputs = [];
 
   for (const mfp of matchingFilePaths) {
-    const stat = await promises_namespaceObject.stat(mfp);
-    if (!stat.isFile()) {
-      continue;
-    }
     const content = await promises_namespaceObject.readFile(mfp, 'utf-8');
     if (enableSegment) {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
