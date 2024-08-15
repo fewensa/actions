@@ -26843,12 +26843,31 @@ const defaultAllowSuffixes = [
   'ini', 'toml', 'properties', 'conf'
 ];
 
+function _input(name, options) {
+  if (!name) return null;
+  const stdNameEnv = name.toUpperCase().replaceAll('-', '_');
+  let value;
+  try {
+    value = core.getInput(name, options);
+    if (!value) {
+      value = process.env[stdNameEnv];
+    }
+  } catch (e) {
+    value = process.env[stdNameEnv];
+    if (!value) {
+      throw e;
+    }
+  }
+  return value;
+}
+
 function _formatArrayText(text) {
+  if (!text) return [];
   return text
-    .replace('\n', ',')
-    .replace('\r', ',')
-    .replace(' ', ',')
-    .replace('\t', ',')
+    .replaceAll('\n', ',')
+    .replaceAll('\r', ',')
+    .replaceAll(' ', ',')
+    .replaceAll('\t', ',')
     .split(',')
     .filter(item => item);
 }
@@ -26863,7 +26882,7 @@ function _pickAlias(alias, path) {
 }
 
 async function _extraPaths(paths, dep = 0) {
-  const inputEnableListDir = core.getInput('enable-list-dir');
+  const inputEnableListDir = _input('enable-list-dir');
   const enableListDir = inputEnableListDir === 'true';
   const rets = [];
   for (const path of paths) {
@@ -26880,7 +26899,9 @@ async function _extraPaths(paths, dep = 0) {
     }
     if (enableListDir && stat.isDirectory()) {
       if (dep === 1) continue;
-      const dirFiles = _extraPaths([path], dep + 1);
+      const fileList = await promises_namespaceObject.readdir(path);
+      const patchFileNames = fileList.map(item => `${path}/${item}`);
+      const dirFiles = await _extraPaths(patchFileNames, dep + 1);
       rets.push(...dirFiles);
     }
   }
@@ -26888,7 +26909,7 @@ async function _extraPaths(paths, dep = 0) {
 }
 
 async function parsePaths() {
-  const inputPaths = core.getInput('paths', { required: true });
+  const inputPaths = _input('paths', { required: true });
   let paths;
   try {
     paths = JSON.parse(inputPaths);
@@ -26902,14 +26923,14 @@ async function parsePaths() {
 }
 
 function parseAlias() {
-  const alias = core.getInput('alias');
+  const alias = _input('alias');
   const rawAliasArray = _formatArrayText(alias);
   const aliasMap = {};
   for (const a of rawAliasArray) {
     const [left, right] = a.split(':');
     aliasMap[left.trim()] = right.trim();
   }
-  const inputUseBoundAlias = core.getInput('use-bound-alias');
+  const inputUseBoundAlias = _input('use-bound-alias');
   const useBoundAlias = inputUseBoundAlias === 'true';
   if (useBoundAlias) {
     return {
@@ -26922,10 +26943,10 @@ function parseAlias() {
 
 async function main() {
   const paths = await parsePaths();
-  // core.debug(`detected paths: [${paths.join(',')}]`);
+  core.debug(`detected paths: [${paths.join(',')}]`);
   const alias = parseAlias();
-  const inputEnableSegment = core.getInput('enable-segment');
-  // const regularExpression = core.getInput('pattern');
+  const inputEnableSegment = _input('enable-segment');
+  // const regularExpression = _input('pattern');
   // const pattern = new RegExp(regularExpression);
   const enableSegment = inputEnableSegment === 'true';
 
@@ -26939,12 +26960,14 @@ async function main() {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
     }
     outputs.push(content);
-    // core.debug(`append path ${mfp} to result`);
+    core.debug(`append path ${mfp} to result`);
   }
 
   const content = outputs.join('\n');
-  core.setOutput('content', content);
+  console.log(content);
   // core.debug(content);
+
+  // core.setOutput('content', content);
 }
 
 main().catch((err) => core.setFailed(err.message));
