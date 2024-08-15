@@ -2,6 +2,19 @@ import * as fs from 'node:fs/promises'
 import core from '@actions/core'
 
 
+const boundAlias = {
+  'branch.txt': 'Branch',
+  'commit.txt': 'Commit',
+  'date.txt': 'Time',
+  'message.txt': 'Message',
+  'ref.txt': 'Refs',
+  'tag.txt': 'Tag'
+};
+const defaultAllowSuffixes = [
+  'txt', 'text', 'json', 'md', 'yml', 'yaml',
+  'ini', 'toml', 'properties', 'conf'
+];
+
 function _formatArrayText(text) {
   return text('\n', ',')
     .replace('\r', ',')
@@ -20,17 +33,43 @@ function _pickAlias(alias, path) {
   return path;
 }
 
-function parsePaths() {
+async function _extraPaths(paths, dep = 0) {
+  const inputEnableListDir = core.getInput('enable-list-dir');
+  const enableListDir = inputEnableListDir === 'true';
+  const rets = [];
+  for (const path of paths) {
+    const lowercasePath = path.toLowerCase();
+    const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
+    if (!foundedSuffix) {
+      core.info(`not allow ${path} please add suffixes to support this file`);
+      continue;
+    }
+    const stat = await fs.stat(path);
+    if (stat.isFile()) {
+      rets.push(path);
+      continue;
+    }
+    if (enableListDir && stat.isDirectory()) {
+      if (dep === 1) continue;
+      const dirFiles = _extraPaths([path], dep + 1);
+      rets.push(...dirFiles);
+    }
+  }
+  return rets;
+}
+
+async function parsePaths() {
   const path = core.getInput('path', { required: true });
   let paths;
   try {
     paths = JSON.parse(path);
     if (paths && paths.length) {
-      return paths;
+      return await _extraPaths(paths);
     }
   } catch (e) {
   }
-  return _formatArrayText(path);
+  paths = _formatArrayText(path);
+  return await _extraPaths(paths);
 }
 
 function parseAlias() {
@@ -41,16 +80,24 @@ function parseAlias() {
     const [left, right] = a.split(':');
     aliasMap[left.trim()] = right.trim();
   }
+  const inputUseBoundAlias = core.getInput('use-bound-alias');
+  const useBoundAlias = inputUseBoundAlias === 'true';
+  if (useBoundAlias) {
+    return {
+      ...boundAlias,
+      ...aliasMap,
+    }
+  }
   return aliasMap;
 }
 
 async function main() {
-  const paths = parsePaths();
+  const paths = await parsePaths();
   const alias = parseAlias();
-  const inputSegment = core.getInput('segment');
+  const inputEnableSegment = core.getInput('enable-segment');
   const regularExpression = core.getInput('pattern');
   const pattern = new RegExp(regularExpression);
-  const enableSegment = inputSegment === 'true';
+  const enableSegment = inputEnableSegment === 'true';
 
   const matchingFilePaths = paths.filter((filePath) => pattern.test(filePath));
 
