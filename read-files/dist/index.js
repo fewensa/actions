@@ -26867,14 +26867,14 @@ async function _extraPaths(paths, dep = 0) {
   const enableListDir = inputEnableListDir === 'true';
   const rets = [];
   for (const path of paths) {
-    const lowercasePath = path.toLowerCase();
-    const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
-    if (!foundedSuffix) {
-      core.info(`not allow ${path} please add suffixes to support this file`);
-      continue;
-    }
     const stat = await promises_namespaceObject.stat(path);
     if (stat.isFile()) {
+      const lowercasePath = path.toLowerCase();
+      const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
+      if (!foundedSuffix) {
+        core.info(`not allow ${path} please add suffixes to support this file`);
+        continue;
+      }
       rets.push(path);
       continue;
     }
@@ -26922,25 +26922,29 @@ function parseAlias() {
 
 async function main() {
   const paths = await parsePaths();
+  core.debug(`detected paths: ${paths}`);
   const alias = parseAlias();
   const inputEnableSegment = core.getInput('enable-segment');
-  const regularExpression = core.getInput('pattern');
-  const pattern = new RegExp(regularExpression);
+  // const regularExpression = core.getInput('pattern');
+  // const pattern = new RegExp(regularExpression);
   const enableSegment = inputEnableSegment === 'true';
 
-  const matchingFilePaths = paths.filter((filePath) => pattern.test(filePath));
+  // const matchingFilePaths = paths.filter((filePath) => pattern.test(filePath));
 
   const outputs = [];
 
-  for (const mfp of matchingFilePaths) {
+  for (const mfp of paths) {
     const content = await promises_namespaceObject.readFile(mfp, 'utf-8');
     if (enableSegment) {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
     }
     outputs.push(content);
+    core.debug(`append path ${mfp} to result`);
   }
 
-  core.setOutput('content', outputs.join('\n'))
+  const content = outputs.join('\n');
+  core.setOutput('content', content);
+  core.debug(content);
 }
 
 main().catch((err) => core.setFailed(err.message));
