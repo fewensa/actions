@@ -90,7 +90,7 @@ runs:
         echo 'branch: ${{ steps.branch-names.outputs.current_branch }}' >> ${VARS_FILE}
         echo 'github_branch: ${{ steps.branch-names.outputs.current_branch }}' >> ${VARS_FILE}
         echo 'metadata: "${{ steps.read-files.outputs.content_escape }}"' >> ${VARS_FILE}
-        echo 'workflows: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> ${VARS_FILE}
+        echo 'workflows_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> ${VARS_FILE}
 
 
 
