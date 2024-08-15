@@ -20,6 +20,11 @@ inputs:
     required: false
     default: '__origin__/.github'
 
+  tailinfo:
+    description: 'template tail info'
+    required: false
+    default: 'trigger by action https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+
   token:
     description: 'provider token'
     required: true
@@ -28,6 +33,9 @@ inputs:
     required: false
   aters:
     description: 'aters'
+    required: false
+  pattos:
+    description: 'pat tos'
     required: false
 
 runs:
@@ -92,6 +100,13 @@ runs:
         echo 'metadata: "${{ steps.read-files.outputs.content_escape }}"' >> ${VARS_FILE}
         echo 'workflows_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> ${VARS_FILE}
 
+    - name: Prepare template
+      shell: bash
+      run: |
+        TEMPLATE_FILE=${{ steps.prepare_template.outputs.TEMPLATE }}
+        INPUT_TAILINFO="${{ inputs.tailinfo }}"
+
+        echo "$INPUT_TAILINFO" >> $TEMPLATE_FILE
 
 
     - name: Render template
@@ -112,4 +127,13 @@ runs:
         template: txt
         aters: ${{ inputs.aters }}
 
+    - name: Pat message
+      uses: fewensa/actions/weplusbot@main
+      if: ${{ inputs.provider == 'weplusbot' && inputs.pattos != '' }}
+      with:
+        token: ${{ inputs.token }}
+        receiver: ${{ inputs.receiver }}
+        version: 'personal'
+        content: ${{ inputs.pattos }}
+        template: pat
 
