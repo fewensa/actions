@@ -137,6 +137,7 @@ async function main() {
   }
 
   const content = outputs.join('\n');
+  core.debug(content);
 
   core.setOutput('content', content);
 }
