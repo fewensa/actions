@@ -39,14 +39,14 @@ async function _extraPaths(paths, dep = 0) {
   const enableListDir = inputEnableListDir === 'true';
   const rets = [];
   for (const path of paths) {
-    const lowercasePath = path.toLowerCase();
-    const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
-    if (!foundedSuffix) {
-      core.info(`not allow ${path} please add suffixes to support this file`);
-      continue;
-    }
     const stat = await fs.stat(path);
     if (stat.isFile()) {
+      const lowercasePath = path.toLowerCase();
+      const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
+      if (!foundedSuffix) {
+        core.info(`not allow ${path} please add suffixes to support this file`);
+        continue;
+      }
       rets.push(path);
       continue;
     }
@@ -96,15 +96,15 @@ async function main() {
   const paths = await parsePaths();
   const alias = parseAlias();
   const inputEnableSegment = core.getInput('enable-segment');
-  const regularExpression = core.getInput('pattern');
-  const pattern = new RegExp(regularExpression);
+  // const regularExpression = core.getInput('pattern');
+  // const pattern = new RegExp(regularExpression);
   const enableSegment = inputEnableSegment === 'true';
 
-  const matchingFilePaths = paths.filter((filePath) => pattern.test(filePath));
+  // const matchingFilePaths = paths.filter((filePath) => pattern.test(filePath));
 
   const outputs = [];
 
-  for (const mfp of matchingFilePaths) {
+  for (const mfp of paths) {
     const content = await fs.readFile(mfp, 'utf-8');
     if (enableSegment) {
       outputs.push(`=== ${_pickAlias(alias, mfp)} ===`);
