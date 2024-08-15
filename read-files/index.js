@@ -16,7 +16,8 @@ const defaultAllowSuffixes = [
 ];
 
 function _formatArrayText(text) {
-  return text('\n', ',')
+  return text
+    .replace('\n', ',')
     .replace('\r', ',')
     .replace(' ', ',')
     .replace('\t', ',')
