@@ -52,9 +52,18 @@ runs:
         INPUT_TOKEN='${{ inputs.token }}'
         INPUT_RECEIVER='${{ inputs.receiver }}'
         INPUT_VERSION='${{ inputs.version }}'
-        INPUT_CONTENT='${{ inputs.content }}'
-        INPUT_TITLE='${{ inputs.title }}'
-        INPUT_TEMPLATE='${{ inputs.template }}'
+        INPUT_CONTENT=$(cat << EOF
+        ${{ inputs.content }}
+        EOF
+        )
+        INPUT_TITLE=$(cat << EOF
+        ${{ inputs.title }}
+        EOF
+        )
+        INPUT_TEMPLATE=$(cat << EOF
+        ${{ inputs.template }}
+        EOF
+        )
         INPUT_ATERS='${{ inputs.aters }}'
         INPUT_TIMESTAMP='${{ inputs.timestamp }}'
         INPUT_COVER='${{ inputs.cover }}'
@@ -86,7 +95,7 @@ runs:
           token: $token,
           version: $version,
           content: $content,
-          template: $template, 
+          template: $template,
         }
         + (if $receiver != "" then {receiver: $receiver} else {} end)
         + (if $title != "" then {title: $title} else {} end)
