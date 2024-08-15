@@ -2,13 +2,14 @@ import * as fs from 'node:fs/promises'
 import * as core from '@actions/core'
 
 
+// 🌳⏰🔖
 const boundAlias = {
   'branch.txt': '🌴',
   'commit.txt': '🆔',
   'date.txt': '⌚',
   'message.txt': '📬',
   'ref.txt': '🌳',
-  'tag.txt': '📎'
+  'tag.txt': '🔖'
 };
 const defaultAllowSuffixes = [
   'txt', 'text', 'json', 'md', 'yml', 'yaml',
