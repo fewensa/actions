@@ -26832,12 +26832,12 @@ var core = __nccwpck_require__(2186);
 
 // 🌳⏰🔖
 const boundAlias = {
-  'branch.txt': '🌴',
-  'commit.txt': '🆔',
-  'date.txt': '⌚',
-  'message.txt': '📬',
-  'ref.txt': '🌳',
-  'tag.txt': '🔖'
+  'branch.txt': 'Branch',
+  'commit.txt': 'Commit',
+  'date.txt': 'Time',
+  'message.txt': 'Message',
+  'ref.txt': 'Refs',
+  'tag.txt': 'Tag',
 };
 const defaultAllowSuffixes = [
   'txt', 'text', 'json', 'md', 'yml', 'yaml',
