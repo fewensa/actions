@@ -122,8 +122,6 @@ runs:
           git pull origin ${GIT_REF} || true
         fi
 
-        echo '__origin__' >> .gitignore
-
         # ls -la ./
 
         echo "Cloned $Z_SAFE_REPOSITORY repository successfully."

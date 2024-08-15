@@ -39,7 +39,10 @@ runs:
           exit 1
         fi
 
-        PERSIST_TEMPLATE_FILE=_____tepusher_____.local.txt
+        mkdir -p _____tepusher_____
+        echo '/*' > _____tepusher_____/.gitignore
+
+        PERSIST_TEMPLATE_FILE=_____tepusher_____/template.txt
         echo '*.local.*' >> .gitignore
 
         if [[ "$INPUT_TEMPLATE" =~ ^https?:// ]]; then
@@ -72,4 +75,4 @@ runs:
         template: txt
         aters: ${{ inputs.aters }}
 
-          
+
