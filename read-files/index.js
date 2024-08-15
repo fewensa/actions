@@ -109,7 +109,7 @@ function parseAlias() {
   }
 }
 
-async function _stdContent(content) {
+function _stdContent(content) {
   if (!content) return content;
   const inputShrinkLine = _input('shrink-line');
   const enableShrinkLine = inputShrinkLine === 'true';
