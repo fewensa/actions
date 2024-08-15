@@ -26910,7 +26910,7 @@ async function _extraPaths(paths, dep = 0) {
 }
 
 async function parsePaths() {
-  const inputPaths = _input('paths', { required: true });
+  const inputPaths = _input('paths', {required: true});
   let paths;
   try {
     paths = JSON.parse(inputPaths);
@@ -26963,6 +26963,10 @@ async function main() {
   core.info(content);
 
   core.setOutput('content', content);
+  if (content) {
+    const stringifyContent = JSON.stringify(content);
+    core.setOutput('content_escape', stringifyContent.slice(1, -1));
+  }
 }
 
 main().catch((err) => core.setFailed(err.message));
