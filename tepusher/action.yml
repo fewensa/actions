@@ -71,7 +71,7 @@ runs:
         token: ${{ inputs.token }}
         receiver: ${{ inputs.receiver }}
         version: 'personal'
-        content: ${{ steps.prepare_template.outputs.TEMPLATE }}
+        content: ${{ steps.render_template.outputs.result }}
         template: txt
         aters: ${{ inputs.aters }}
 
