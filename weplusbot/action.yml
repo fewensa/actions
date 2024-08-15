@@ -78,7 +78,7 @@ runs:
               --arg content "$CONTENT" \
               --arg title "$TITLE" \
               --arg template "$INPUT_TEMPLATE" \
-              --arg ATERS "$ATERS" \
+              --arg aters "$ATERS" \
               --arg cover "$INPUT_COVER" \
               --arg timestamp "$INPUT_TIMESTAMP" \
               --arg url "$INPUT_URL" \
