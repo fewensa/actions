@@ -1,0 +1,27 @@
+name: Read files action
+author: fewensa
+description: 'Read files content'
+branding:
+  icon: 'file'
+  color: yellow
+inputs:
+  files:
+    description: 'File paths'
+    required: true
+  pattern:
+    description: 'File pattern to match using RegEx'
+    required: false
+    default: '*'
+  alias:
+    description: 'File name alias; `license.txt: LICENSE`'
+    required: false
+  segment:
+    description: 'enable segment'
+    required: false
+    default: 'false'
+outputs:
+  content:
+    description: 'Concatenated content of the files'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
