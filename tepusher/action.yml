@@ -54,22 +54,22 @@ runs:
 
         echo "TEMPLATE=${PERSIST_TEMPLATE_FILE}" >> $GITHUB_OUTPUT
 
-      - name: Render template
-        id: render_template
-        uses: chuhlomin/render-template@v1
-        with:
-          template: ${{ steps.prepare_template.outputs.TEMPLATE }}
-          vars: ${{ inputs.vars }}
+    - name: Render template
+      id: render_template
+      uses: chuhlomin/render-template@v1
+      with:
+        template: ${{ steps.prepare_template.outputs.TEMPLATE }}
+        vars: ${{ inputs.vars }}
 
-      - name: Push message
-        uses: fewensa/actions/weplusbot@main
-        if: ${{ inputs.provider == 'weplusbot' }}
-        with:
-          token: ${{ inputs.token }}
-          receiver: ${{ inputs.receiver }}
-          version: 'personal'
-          content: ${{ steps.prepare_template.outputs.TEMPLATE }}
-          template: txt
-          aters: ${{ inputs.aters }}
+    - name: Push message
+      uses: fewensa/actions/weplusbot@main
+      if: ${{ inputs.provider == 'weplusbot' }}
+      with:
+        token: ${{ inputs.token }}
+        receiver: ${{ inputs.receiver }}
+        version: 'personal'
+        content: ${{ steps.prepare_template.outputs.TEMPLATE }}
+        template: txt
+        aters: ${{ inputs.aters }}
 
           
