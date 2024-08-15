@@ -3,12 +3,12 @@ import * as core from '@actions/core'
 
 
 const boundAlias = {
-  'branch.txt': 'Branch',
-  'commit.txt': 'Commit',
-  'date.txt': 'Time',
-  'message.txt': 'Message',
-  'ref.txt': 'Refs',
-  'tag.txt': 'Tag'
+  'branch.txt': '🌴',
+  'commit.txt': '🆔',
+  'date.txt': '⌚',
+  'message.txt': '📬',
+  'ref.txt': '🌳',
+  'tag.txt': '📎'
 };
 const defaultAllowSuffixes = [
   'txt', 'text', 'json', 'md', 'yml', 'yaml',
