@@ -29,6 +29,8 @@ inputs:
 outputs:
   content:
     description: 'Concatenated content of the files'
+  content_escape:
+    description: 'Escape concatenated content of the files'
 runs:
   using: 'node20'
   main: 'dist/index.js'
