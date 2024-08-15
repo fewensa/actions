@@ -18,10 +18,6 @@ inputs:
   alias:
     description: 'File name alias; `license.txt: LICENSE`'
     required: false
-  use-bound-alias:
-    description: 'Use bound alias'
-    required: false
-    default: 'false'
   enable-segment:
     description: 'enable segment'
     required: false

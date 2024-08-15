@@ -103,15 +103,10 @@ function parseAlias() {
     const [left, right] = a.split(':');
     aliasMap[left.trim()] = right.trim();
   }
-  const inputUseBoundAlias = _input('use-bound-alias');
-  const useBoundAlias = inputUseBoundAlias === 'true';
-  if (useBoundAlias) {
-    return {
-      ...boundAlias,
-      ...aliasMap,
-    }
+  return {
+    ...boundAlias,
+    ...aliasMap,
   }
-  return aliasMap;
 }
 
 async function main() {
