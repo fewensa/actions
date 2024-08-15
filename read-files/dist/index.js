@@ -26964,10 +26964,8 @@ async function main() {
   }
 
   const content = outputs.join('\n');
-  console.log(content);
-  // core.debug(content);
 
-  // core.setOutput('content', content);
+  core.setOutput('content', content);
 }
 
 main().catch((err) => core.setFailed(err.message));
