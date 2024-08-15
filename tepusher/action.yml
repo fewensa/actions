@@ -32,7 +32,10 @@ runs:
       id: prepare_template
       shell: bash
       run: |
-        INPUT_TEMPLATE='${{ inputs.template }}'
+        INPUT_TEMPLATE=$(cat << EOF
+        ${{ inputs.template }}
+        EOF
+        )
 
         if [[ -z "$INPUT_TEMPLATE" ]]; then
           echo 'missing template'
