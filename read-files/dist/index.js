@@ -26798,35 +26798,6 @@ module.exports = parseParams
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -26854,7 +26825,6 @@ __nccwpck_require__.r(__webpack_exports__);
 const promises_namespaceObject = require("node:fs/promises");
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 ;// CONCATENATED MODULE: ./index.js
 
 
@@ -26892,14 +26862,14 @@ function _pickAlias(alias, path) {
 }
 
 async function _extraPaths(paths, dep = 0) {
-  const inputEnableListDir = core_default().getInput('enable-list-dir');
+  const inputEnableListDir = core.getInput('enable-list-dir');
   const enableListDir = inputEnableListDir === 'true';
   const rets = [];
   for (const path of paths) {
     const lowercasePath = path.toLowerCase();
     const foundedSuffix = defaultAllowSuffixes.find(item => lowercasePath.endsWith(item));
     if (!foundedSuffix) {
-      core_default().info(`not allow ${path} please add suffixes to support this file`);
+      core.info(`not allow ${path} please add suffixes to support this file`);
       continue;
     }
     const stat = await promises_namespaceObject.stat(path);
@@ -26917,7 +26887,7 @@ async function _extraPaths(paths, dep = 0) {
 }
 
 async function parsePaths() {
-  const inputPaths = core_default().getInput('paths', { required: true });
+  const inputPaths = core.getInput('paths', { required: true });
   let paths;
   try {
     paths = JSON.parse(inputPaths);
@@ -26931,14 +26901,14 @@ async function parsePaths() {
 }
 
 function parseAlias() {
-  const alias = core_default().getInput('alias');
+  const alias = core.getInput('alias');
   const rawAliasArray = _formatArrayText(alias);
   const aliasMap = {};
   for (const a of rawAliasArray) {
     const [left, right] = a.split(':');
     aliasMap[left.trim()] = right.trim();
   }
-  const inputUseBoundAlias = core_default().getInput('use-bound-alias');
+  const inputUseBoundAlias = core.getInput('use-bound-alias');
   const useBoundAlias = inputUseBoundAlias === 'true';
   if (useBoundAlias) {
     return {
@@ -26952,8 +26922,8 @@ function parseAlias() {
 async function main() {
   const paths = await parsePaths();
   const alias = parseAlias();
-  const inputEnableSegment = core_default().getInput('enable-segment');
-  const regularExpression = core_default().getInput('pattern');
+  const inputEnableSegment = core.getInput('enable-segment');
+  const regularExpression = core.getInput('pattern');
   const pattern = new RegExp(regularExpression);
   const enableSegment = inputEnableSegment === 'true';
 
@@ -26969,10 +26939,10 @@ async function main() {
     outputs.push(content);
   }
 
-  core_default().setOutput('content', outputs.join('\n'))
+  core.setOutput('content', outputs.join('\n'))
 }
 
-main().catch((err) => core_default().setFailed(err.message));
+main().catch((err) => core.setFailed(err.message));
 
 })();
 
