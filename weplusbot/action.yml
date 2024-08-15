@@ -60,10 +60,7 @@ runs:
         ${{ inputs.title }}
         EOF
         )
-        INPUT_TEMPLATE=$(cat << EOF
-        ${{ inputs.template }}
-        EOF
-        )
+        INPUT_TEMPLATE=${{ inputs.template }}
         INPUT_ATERS='${{ inputs.aters }}'
         INPUT_TIMESTAMP='${{ inputs.timestamp }}'
         INPUT_COVER='${{ inputs.cover }}'
