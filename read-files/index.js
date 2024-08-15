@@ -94,7 +94,7 @@ function parseAlias() {
 
 async function main() {
   const paths = await parsePaths();
-  core.debug(`detected paths: ${paths}`);
+  core.debug(`detected paths: [${paths.join(',')}]`);
   const alias = parseAlias();
   const inputEnableSegment = core.getInput('enable-segment');
   // const regularExpression = core.getInput('pattern');
