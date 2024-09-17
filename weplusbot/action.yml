@@ -102,10 +102,11 @@ runs:
         + (if $url != "" then {url: $url} else {} end)'
         )
 
+        # https://www.weplusbot.com/send
         RESPONSE=$(
           curl -X POST \
             -H 'Content-Type: application/json' \
-            https://www.weplusbot.com/send \
+            https://cors.kahub.in/www.weplusbot.com/send \
             -d "${BODY}"
         )
 
