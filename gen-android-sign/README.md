@@ -45,7 +45,7 @@ The path of sign key file
 
 ```yaml
 steps:
-  - uses: actions/checkout@v2
+  - uses: actions/checkout@v4
     with:
       repository: fewensa/actions
       path: .github/actions
