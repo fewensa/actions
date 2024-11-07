@@ -122,7 +122,6 @@ runs:
       with:
         token: ${{ inputs.token }}
         receiver: ${{ inputs.receiver }}
-        version: 'personal'
         content: ${{ steps.render_template.outputs.result }}
         template: txt
         aters: ${{ inputs.aters }}
@@ -133,7 +132,6 @@ runs:
       with:
         token: ${{ inputs.token }}
         receiver: ${{ inputs.receiver }}
-        version: 'personal'
         content: ${{ inputs.pattos }}
         template: pat
 
