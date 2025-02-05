@@ -60,7 +60,7 @@ runs:
         # prepare changes
 
         rm -rf .github
-        mv $INPUT_DOT_GITHUB .github
+        mv ../$INPUT_DOT_GITHUB .github
 
         if [ ! -d ".github" ]; then
           echo 'not found .github dir'
