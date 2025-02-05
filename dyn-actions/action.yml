@@ -19,6 +19,10 @@ inputs:
   ssh_key:
     description: 'SSH private key'
     required: true
+  dyn_owner:
+    description: 'dynamic actions repo owner'
+    required: false
+    default: '0xfe10'
 runs:
   using: "composite"
   steps:
@@ -47,7 +51,7 @@ runs:
 
         T_BRANCH=${{ github.repository }}
 
-        git clone git@github.com:fewensa/dynamic-actions.git
+        git clone git@github.com:${{ inputs.dyn_owner }}/dynamic-actions.git
         cd dynamic-actions
         git fetch
         git checkout -b $T_BRANCH origin/$T_BRANCH || (git branch $T_BRANCH && git checkout $T_BRANCH)
@@ -56,7 +60,16 @@ runs:
         # prepare changes
 
         rm -rf .github
-        mv $DOT_GITHUB ./
+        mv $INPUT_DOT_GITHUB .github
+
+        if [ ! -d ".github" ]; then
+          echo 'not found .github dir'
+          exit 1
+        fi
+        if [ -d ".github/dyn-workflows" ]; then
+          rm -rf .github/workflows
+          mv .github/dyn-workflows .github/workflows
+        fi
         date > .github/date.txt
 
         REPO_BRANCH=${{ steps.extract_branch.outputs.branch }}
