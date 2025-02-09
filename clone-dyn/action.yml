@@ -24,6 +24,7 @@ runs:
   steps:
 
     - name: Prepare Git Repository
+      shell: bash
       run: |
         rm -rf .git
         echo '/*' > .gitignore
@@ -56,6 +57,7 @@ runs:
         path: ${{ setps.prepare_options.outputs.TARGET_NAME }}
 
     - name: Reorganize Git Repo
+      shell: bash
       run: |
         TARGET_NAME='${{ setps.prepare_options.outputs.TARGET_NAME }}'
 
