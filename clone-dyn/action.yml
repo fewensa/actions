@@ -54,12 +54,12 @@ runs:
         repository: ${{ inputs.repository }}
         ref: ${{ steps.prepare_options.outputs.GIT_REF }}
         token: ${{ inputs.token }}
-        path: ${{ setps.prepare_options.outputs.TARGET_NAME }}
+        path: ${{ steps.prepare_options.outputs.TARGET_NAME }}
 
     - name: Reorganize Git Repo
       shell: bash
       run: |
-        TARGET_NAME='${{ setps.prepare_options.outputs.TARGET_NAME }}'
+        TARGET_NAME='${{ steps.prepare_options.outputs.TARGET_NAME }}'
 
         find ${TARGET_NAME} -mindepth 1 -maxdepth 1 -exec mv {} . \;
 
