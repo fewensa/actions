@@ -23,14 +23,6 @@ runs:
   using: "composite"
   steps:
 
-    - name: Prepare Git Repository
-      shell: bash
-      run: |
-        rm -rf .git
-        echo '/*' > .gitignore
-        mkdir __origin__
-        find . -maxdepth 1 ! -path './__origin__' ! -path '.' -exec mv {} __origin__/ \;
-
     - name: Prepare Options
       shell: bash
       id: prepare_options
@@ -48,6 +40,14 @@ runs:
 
         echo "GIT_REF=$GIT_REF" >> $GITHUB_OUTPUT
         echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_OUTPUT
+
+    - name: Prepare Git Repository
+      shell: bash
+      run: |
+        rm -rf .git
+        echo '/*' > .gitignore
+        mkdir __origin__
+        find . -maxdepth 1 ! -path './__origin__' ! -path '.' -exec mv {} __origin__/ \;
 
     - uses: actions/checkout@v4
       with:
