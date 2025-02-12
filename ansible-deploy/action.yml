@@ -22,6 +22,10 @@ inputs:
   ac_git_ref:
     description: 'action context: git ref'
     required: false
+  provider:
+    description: 'provider'
+    default: 'github'
+    required: false
 
 runs:
   using: "composite"
@@ -48,6 +52,7 @@ runs:
         INPUT_TRIGGER_URL=${{ inputs.trigger_url }}
         INPUT_TRIGGER_TOKEN=${{ inputs.trigger_token }}
         INPUT_CHANGES=${{ inputs.changes }}
+        INPUT_PROVIDER=${{ inputs.provider }}
         DEFAULT_COMMIT_MESSAGE="${{ github.event.inputs.message }}"
 
         if [ -f "${INPUT_COMMIT_MESSAGE}" ]; then
@@ -76,16 +81,29 @@ runs:
           TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
         fi
 
-        curl -fsSL -o /dev/null -X POST \
-          --retry 5 --retry-connrefused --retry-delay 10 \
-          -F "token=$INPUT_TRIGGER_TOKEN" \
-          -F "ref=main" \
-          -F "variables[DEPLOY_MODE]=ansible" \
-          -F "variables[DEPLOY_PROJECT]=${PROJECT_NAME}" \
-          -F "variables[TRIGGER_CHANGES]=$TRIGGER_CHANGES" \
-          -F "variables[DEPLOY_DESCRIPTION]=$DESCRIPTION" \
-          -F "variables[TRIGGER_MESSAGE]=$COMMIT_MSG" \
-          "$INPUT_TRIGGER_URL"
+        if [ "${PLATFORM}" == "gitlab" ]; then
+          curl -fsSL -o /dev/null -X POST \
+            --retry 5 --retry-connrefused --retry-delay 10 \
+            -F "token=$INPUT_TRIGGER_TOKEN" \
+            -F "ref=main" \
+            -F "variables[DEPLOY_MODE]=ansible" \
+            -F "variables[DEPLOY_PROJECT]=${PROJECT_NAME}" \
+            -F "variables[TRIGGER_CHANGES]=$TRIGGER_CHANGES" \
+            -F "variables[DEPLOY_DESCRIPTION]=$DESCRIPTION" \
+            -F "variables[TRIGGER_MESSAGE]=$COMMIT_MSG" \
+            "$INPUT_TRIGGER_URL"
+        fi
 
+        if [ "${PLATFORM}" == "github" ]; then
+          MESSAGE="[${PROJECT_NAME}]: ${DESCRIPTION} ${COMMIT_MSG}"
+          echo "${TRIGGER_CHANGES}" > ____changes.json
+          MULTI_CHANGES=$(jq -crs '.' < ____changes.json)
+          gh workflow run \
+            trigger.yml \
+            --ref=main \
+            --repo=repotea-workflow/ansible-mine \
+            --raw-field="changes=${MULTI_CHANGES}" \
+            --raw-field="message=${MESSAGE}" 
+        fi
 
 
