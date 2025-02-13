@@ -96,13 +96,13 @@ runs:
 
         if [ "${INPUT_PROVIDER}" == "github" ]; then
           MESSAGE="[${PROJECT_NAME}]: ${DESCRIPTION} ${COMMIT_MSG}"
-          echo "${TRIGGER_CHANGES}" > ____changes.json
-          MULTI_CHANGES=$(jq -crs '.' < ____changes.json)
+          #echo "${TRIGGER_CHANGES}" > ____changes.json
+          #MULTI_CHANGES=$(jq -crs '.' < ____changes.json)
           gh workflow run \
             trigger.yml \
             --ref=main \
             --repo=repotea-workflow/ansible-mine \
-            --raw-field="changes=${MULTI_CHANGES}" \
+            --raw-field="changes=${TRIGGER_CHANGES}" \
             --raw-field="message=${MESSAGE}" 
         fi
 
