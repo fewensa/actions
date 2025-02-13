@@ -53,7 +53,7 @@ runs:
         INPUT_TRIGGER_TOKEN=${{ inputs.trigger_token }}
         INPUT_CHANGES=${{ inputs.changes }}
         INPUT_PROVIDER=${{ inputs.provider }}
-        DEFAULT_COMMIT_MESSAGE="${{ github.event.inputs.message }}"
+        DEFAULT_COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
 
         if [ -f "${INPUT_COMMIT_MESSAGE}" ]; then
           INPUT_COMMIT_MESSAGE=$(cat ${INPUT_COMMIT_MESSAGE})
