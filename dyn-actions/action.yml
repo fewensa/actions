@@ -38,6 +38,8 @@ runs:
       with:
         ssh-private-key: ${{ inputs.ssh_key }}
         ssh-host: github.com
+    - name: Expose git commit data
+      uses: jcputney/git-commit-data-action@v2
     - name: Trigger dynamic actions
       shell: bash
       run: |
@@ -88,6 +90,7 @@ runs:
 
         LATEST_COMMIT_LOG="${{ github.event.head_commit.message }}"
         COMMIT_MSG=${COMMIT_MSG:-${LATEST_COMMIT_LOG}}
+        COMMIT_MSG=${COMMIT_MSG:-${GIT_COMMIT_MESSAGE}}
 
         echo "${COMMIT_MSG}" > .github/message.txt
         echo "${COMMIT_SHA}" > .github/commit.txt
