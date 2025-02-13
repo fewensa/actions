@@ -81,7 +81,7 @@ runs:
           TRIGGER_CHANGES=$(cat ${TRIGGER_CHANGES})
         fi
 
-        if [ "${PLATFORM}" == "gitlab" ]; then
+        if [ "${INPUT_PROVIDER}" == "gitlab" ]; then
           curl -fsSL -o /dev/null -X POST \
             --retry 5 --retry-connrefused --retry-delay 10 \
             -F "token=$INPUT_TRIGGER_TOKEN" \
@@ -94,7 +94,7 @@ runs:
             "$INPUT_TRIGGER_URL"
         fi
 
-        if [ "${PLATFORM}" == "github" ]; then
+        if [ "${INPUT_PROVIDER}" == "github" ]; then
           MESSAGE="[${PROJECT_NAME}]: ${DESCRIPTION} ${COMMIT_MSG}"
           echo "${TRIGGER_CHANGES}" > ____changes.json
           MULTI_CHANGES=$(jq -crs '.' < ____changes.json)
