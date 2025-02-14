@@ -55,6 +55,7 @@ runs:
         ref: ${{ steps.prepare_options.outputs.GIT_REF }}
         token: ${{ inputs.token }}
         path: ${{ steps.prepare_options.outputs.TARGET_NAME }}
+        fetch-depth: 0
 
     - name: Reorganize Git Repo
       shell: bash
