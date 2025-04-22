@@ -29,7 +29,7 @@ runs:
     - name: Tag
       uses: olegtarasov/get-tag@v2.1
     - name: Sha
-      uses: benjlevesque/short-sha@v1.2
+      uses: benjlevesque/short-sha@v3.0
     - name: Extract branch name
       shell: bash
       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
